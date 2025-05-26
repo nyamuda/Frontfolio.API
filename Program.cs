@@ -1,6 +1,17 @@
+using Frontfolio.API.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Register services
+
+//add database connection string
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

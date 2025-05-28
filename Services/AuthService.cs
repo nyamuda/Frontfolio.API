@@ -12,4 +12,6 @@ public class AuthService
         _jwtService = jwtService;
 
     }
+
+    public async Task<User>
 }

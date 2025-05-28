@@ -1,4 +1,4 @@
-﻿namespace Frontfolio.API.Dtos
+﻿namespace Frontfolio.API.Dtos.Auth
 {
     public class UpdateUserDto
     {

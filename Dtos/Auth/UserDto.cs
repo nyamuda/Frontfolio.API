@@ -1,4 +1,4 @@
-﻿namespace Frontfolio.API.Dtos
+﻿namespace Frontfolio.API.Dtos.Auth
 {
     public class UserDto
     {
@@ -9,9 +9,9 @@
 
         public required bool isVerified { get; set; }
 
-        public required UserRole Role { get; set; }  
+        public required UserRole Role { get; set; }
 
-        
+
         public UserDto MapFrom(User user)
         {
             return new UserDto

@@ -1,6 +1,7 @@
 ﻿using Frontfolio.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 public class JwtService
@@ -14,7 +15,7 @@ public class JwtService
     }
 
 
-    public async string GenerateJwtToken(int userId)
+    public async string GenerateJwtToken(int userId, double expirationInMinutes=10)
     {
         //get the details of the user the token is for
         var user = await  _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
@@ -40,8 +41,17 @@ public class JwtService
             new Claim("isVerified",user.isVerified.ToString().ToLower())
         ];
 
+        //finally create the token
+        var token = new JwtSecurityToken(
+            issuer: jwtIssuer,
+            audience: jwtAudience,
+            signingCredentials: credentials,
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(expirationInMinutes)
+            );
 
 
+        return new JwtSecurityTokenHandler().WriteToken(token);
 
     }
 }

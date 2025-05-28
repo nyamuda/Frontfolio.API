@@ -14,5 +14,7 @@
     public UserRole Role { get; set; } = UserRole.User;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public List<UserOtp> UserOtps { get; set; } = [];
     }
 

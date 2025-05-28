@@ -54,9 +54,9 @@ public class AuthService
 
         //if we're here, then everything is good
         //create an access token
-        //token lifetime is 24 hours
-        double lifeTimeInMinutes = 1440;
-        string accessToken = await _jwtService.GenerateJwtToken(userId: user.Id, expirationInMinutes: lifeTimeInMinutes);
+        //access token lifespan is 72 hours  = 4320 minutes
+        double lifespanInMinutes = 4320;
+        string accessToken = await _jwtService.GenerateJwtToken(userId: user.Id, expirationInMinutes: lifespanInMinutes);
 
         return accessToken;
     }

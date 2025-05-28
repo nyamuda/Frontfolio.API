@@ -8,5 +8,9 @@
     public required string Email { get; set; }
 
     public required string Password { get; set; }
+
+    public bool isVerified { get; set; } = false;
+
+    public UserRole Role { get; set; } = UserRole.User;
     }
 

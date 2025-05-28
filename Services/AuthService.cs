@@ -37,8 +37,7 @@ public class AuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-
-        return User
+        return UserDto.MapFrom(user);
 
 
     }

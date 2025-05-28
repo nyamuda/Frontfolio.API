@@ -12,7 +12,7 @@
         public required UserRole Role { get; set; }
 
 
-        public UserDto MapFrom(User user)
+        public static UserDto MapFrom(User user)
         {
             return new UserDto
             {

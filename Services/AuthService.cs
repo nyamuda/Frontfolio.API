@@ -1,5 +1,6 @@
 ﻿
 using Frontfolio.API.Data;
+using Frontfolio.API.Dtos;
 
 public class AuthService
 {
@@ -13,5 +14,9 @@ public class AuthService
 
     }
 
-    public async Task<User>
+    public async Task<UserDto> Register(AddUserDto addUserDto)
+    {
+        //first check if there aren't any users with registered with the provided email
+
+    }
 }

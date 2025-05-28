@@ -1,6 +1,8 @@
 using Frontfolio.API.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 
@@ -9,8 +11,33 @@ var builder = WebApplication.CreateBuilder(args);
 //Register services
 
 //add database connection string
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found");
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new KeyNotFoundException("Connection string not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+//Configure JWT Authentication
+string jwtIssuer = builder.Configuration.GetValue<string>("Authentication:Jwt:Issuer") ?? throw new KeyNotFoundException("Jwt issuer field not found.");
+string jwtAudience = builder.Configuration.GetValue<string>("Authentication:Jwt:Audience") ?? throw new KeyNotFoundException("Jwt audience field not found.");
+string jwtKey = builder.Configuration.GetValue<string>("Authentication:Jwt:Key") ?? throw new KeyNotFoundException("Jwt key field not found.");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
+
 
 
 builder.Services.AddControllers();
@@ -26,11 +53,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+// Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
+// Authentication middleware
+app.UseAuthentication();
+
+// Authorization middleware
 app.UseAuthorization();
 
 app.MapControllers();
+
+//root API route and its handler
+app.MapGet("/", () => "Welcome to the Frontfolio API.");
 
 app.Run();

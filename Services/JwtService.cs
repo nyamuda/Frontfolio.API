@@ -14,10 +14,10 @@ public class JwtService
     }
 
 
-    public string GenerateJwtToken(int userId)
+    public async string GenerateJwtToken(int userId)
     {
         //get the details of the user the token is for
-        var user = _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        var user = await  _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
         if (user is null) throw new KeyNotFoundException($"User with ID {userId} does not exist.");
 
         //get the JWT settings
@@ -33,7 +33,12 @@ public class JwtService
 
         //Create claims for the token
         // Claims represent data stored in the token
-        Claim[] claims = [new Claim(ClaimTypes.Role)];
+        Claim[] claims = [
+            new Claim(ClaimTypes.Role,user.Role.ToString()),
+            new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+            new Claim(ClaimTypes.Email,user.Email),
+            new Claim("isVerified",user.isVerified.ToString().ToLower())
+        ];
 
 
 

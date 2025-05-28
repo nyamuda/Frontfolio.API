@@ -39,6 +39,25 @@ public class AuthService
 
         return UserDto.MapFrom(user);
 
+    }
 
+
+    public async Task<string> Login(LoginUserDto loginUserDto)
+    {
+        //check if the user with given email exists
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(loginUserDto.Email));
+        if (user is null) throw new KeyNotFoundException("User with the provided email does not exist.");
+
+        //check if the provided password is correct
+        bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(loginUserDto.Password,user.Password);
+        if (!isPasswordCorrect) throw new UnauthorizedAccessException("The provided password is incorrect.");
+
+        //if we're here, then everything is good
+        //create an access token
+        //token lifetime is 24 hours
+        double lifeTimeInMinutes = 1440;
+        string accessToken = await _jwtService.GenerateJwtToken(userId: user.Id, expirationInMinutes: lifeTimeInMinutes);
+
+        return accessToken;
     }
 }

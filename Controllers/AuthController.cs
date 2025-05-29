@@ -19,10 +19,25 @@ public class AuthController : ControllerBase
     [HttpGet("register")]
     public async Task<IActionResult> Register(AddUserDto addUserDto)
     {
-        var userDto = await _authService.Register(addUserDto);
+       
+     try
+        {
+            var userDto = await _authService.Register(addUserDto);
 
-        return CreatedAtAction()
+            return CreatedAtAction()
         }
+
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+
+
+    }
 
     // GET api/<AuthController>/5
     [HttpGet("users/{id}")]

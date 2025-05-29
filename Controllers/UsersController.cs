@@ -17,6 +17,21 @@ namespace Frontfolio.API.Controllers
         }
 
         //Get user by ID
-        public async
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+
+            }
+            catch (KeyNotFoundException ex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

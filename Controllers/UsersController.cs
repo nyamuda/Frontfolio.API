@@ -22,14 +22,24 @@ namespace Frontfolio.API.Controllers
         {
             try
             {
+               var user = await _userService.GetUserById(id);
+
+                return Ok(user);
 
             }
             catch (KeyNotFoundException ex)
             {
-
+                return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
             {
+                var response = new
+                {
+                    message = ex.Message,
+                    details = ex.ToString()
+                };
+
+                return StatusCode(500, response);
 
             }
         }

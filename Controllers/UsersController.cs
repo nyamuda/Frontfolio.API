@@ -2,46 +2,45 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Frontfolio.API.Controllers
+
+[Route("api/[controller]")]
+[ApiController]
+public class UsersController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    private readonly UserService _userService;
+
+
+    public UsersController(UserService userService)
     {
-        private readonly UserService _userService;
+        _userService = userService;
+    }
 
-
-        public UsersController(UserService userService)
+    //Get user by ID
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        try
         {
-            _userService = userService;
+            var user = await _userService.GetUserById(id);
+
+            return Ok(user);
+
         }
-
-        //Get user by ID
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        catch (KeyNotFoundException ex)
         {
-            try
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            var response = new
             {
-               var user = await _userService.GetUserById(id);
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
 
-                return Ok(user);
+            return StatusCode(500, response);
 
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                var response = new
-                {
-                    message = ex.Message,
-                    details = ex.ToString()
-                };
-
-                return StatusCode(500, response);
-
-            }
         }
     }
 }
+

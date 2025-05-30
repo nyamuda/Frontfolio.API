@@ -105,9 +105,25 @@ public class AuthService
         if (user is null)
             throw new KeyNotFoundException($@"User with email ""{emailVerificationDto.Email}"" does not exist.");
 
-        // send email to user
+        //HTML template for email verification
         var emailHtmlTemplate = _htmlTemplateService.EmailConfirmationTemplate(optValue, user.Name, _appName);
+        //send email to user
         await _emailSenderService.SendEmail(user.Name, user.Email, "Email Verification", emailHtmlTemplate);
+
+        //Once the email is sent, save the OTP to the database
+        UserOtp userOtp = new()
+        {
+            Email = user.Email,
+            OtpCode = optValue,
+            ExpirationTime = DateTime.UtcNow.AddMinutes(10),
+            IsUsed=false,
+            UserId=user.Id
+
+        };
+
+        _context.UserOtps.Add(userOtp);
+
+        await _context.SaveChangesAsync();
 
 
     }

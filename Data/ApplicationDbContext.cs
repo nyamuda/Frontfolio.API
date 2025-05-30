@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
     public DbSet<User> Users { get; set; } = default!;
 
+    public DbSet<UserOtp> UserOtps { get; set; } = default!;
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

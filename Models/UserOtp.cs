@@ -3,18 +3,18 @@ public class UserOtp
 {
     public int Id { get; set; }
 
-    public string Email { get; set; } = default!;
+    public required string Email { get; set; } = default!;
 
-    public string OtpCode { get; set; }= default!;
+    public required string OtpCode { get; set; }= default!;
 
-    public DateTime ExpirationTime { get; set; }
+    public required DateTime ExpirationTime { get; set; }
 
-    public bool IsUsed { get; set; }
+    public required bool IsUsed { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public int UserId { get; set; }
+    public required int UserId { get; set; }
 
-    public User User { get; set; } = default!;
+    public User? User { get; set; } 
 }
 

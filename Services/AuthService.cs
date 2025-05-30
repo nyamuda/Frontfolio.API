@@ -7,12 +7,13 @@ public class AuthService
 {
     private readonly ApplicationDbContext _context;
     private readonly JwtService _jwtService;
+    private readonly EmailSenderService _emailSenderService;
 
-    public AuthService(ApplicationDbContext context, JwtService jwtService)
+    public AuthService(ApplicationDbContext context, JwtService jwtService, EmailSenderService emailSenderService)
     {
         _context = context;
         _jwtService = jwtService;
-
+        _emailSenderService = emailSenderService;
     }
 
     public async Task<UserDto> Register(AddUserDto addUserDto)
@@ -81,6 +82,10 @@ public class AuthService
     //Make a request to verify email address
     public async Task EmailConfirmationRequest(EmailVerificationRequestDto emailVerificationDto)
     {
+
+        //first, generate a random six OTP to send to the user
+        string optValue = GenerateRandomOtp();
+
 
 
 

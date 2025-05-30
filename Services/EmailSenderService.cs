@@ -1,14 +1,45 @@
 ﻿using MimeKit;
-    public class EmailSenderService
+using MailKit.Net.Smtp;
+public class EmailSenderService
     {
 
-    private readonly string _emailClientPassword = string.Empty;
+    private readonly string _appEmailPassword = string.Empty;
+    private readonly string _appEmail = "cratecrarity@gmail.com";
+    private readonly string _appName = "Frontfolio";
 
 
     public EmailSenderService(IConfiguration config)
     {
-        _emailClientPassword = config.GetValue<string>("Authentication:Gmail:Password") 
-            ?? throw new KeyNotFoundException("Email client password could not be found");
+        _appEmailPassword = config.GetValue<string>("Authentication:Gmail:Password") 
+            ?? throw new KeyNotFoundException("Email SMTP client password could not be found.");
+    }
+
+
+    public async Task SendEmail(string name, string email, string subject, string message)
+    {
+
+        var messageToSend = new MimeMessage();
+        messageToSend.From.Add(new MailboxAddress(_appName, _appEmail));
+        messageToSend.To.Add(new MailboxAddress(name, email));
+        messageToSend.Subject = subject;
+
+        //send email body as HTML
+        messageToSend.Body = new TextPart("html")
+        {
+            Text = message
+        };
+
+        using(var client = new SmtpClient())
+        {
+            client.Connect("smtp.gmail.com, 587, false");
+
+            client.Authenticate(_appEmail, _appEmailPassword);
+
+           await client.SendAsync(messageToSend);
+
+            client.Disconnect(true);
+        }
+
     }
     }
 

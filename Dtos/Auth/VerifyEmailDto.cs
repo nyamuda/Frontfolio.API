@@ -7,5 +7,10 @@ public class VerifyEmailDto
     [MinLength(6)]
     [MaxLength(6)]
     public string OtpCode { get; set; } = default!;
-    }
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = default!;
+}
+
+
 

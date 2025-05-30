@@ -128,7 +128,11 @@ public class AuthService
     }
 
     //Verify email by checking if the provided OTP is valid 
-    public async Task VerifyEmail
+    public async Task VerifyEmail(VerifyEmailDto verifyEmailDto)
+    {
+        //Check if the OTP code exists, hasn't expired, and belongs to the user
+        bool isOtpCodeValid = await _context.
+    }
 
 
 }

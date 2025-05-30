@@ -32,12 +32,11 @@ public class UsersController : ControllerBase
             ClaimsPrincipal claimsPrincipal = _jwtService.ValidateJwtToken(accessToken);
             //The ID of the user from the token
             string tokenUserId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new KeyNotFoundException("Access token lacks the name identifier claim.");
-
+             
             //For a user to access this resource
             //the ID from their access token must match the ID of the user they're trying to access
             var user = await _userService.GetUserById(id);
-            if (!user.Id.ToString().Equals(tokenUserId))
-                return Forbid(ErrorMessageHelper.ForbiddenErrorMessage());
+            if (!user.Id.ToString().Equals(tokenUserId)) return Forbid(ErrorMessageHelper.ForbiddenErrorMessage());
 
             return Ok(user);
 

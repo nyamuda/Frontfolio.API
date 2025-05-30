@@ -8,18 +8,32 @@ public class AuthService
     private readonly ApplicationDbContext _context;
     private readonly JwtService _jwtService;
     private readonly EmailSenderService _emailSenderService;
+    private readonly HtmlTemplateService _htmlTemplateService;
+    private readonly string _appName;
 
-    public AuthService(ApplicationDbContext context, JwtService jwtService, EmailSenderService emailSenderService)
+    public AuthService(
+        ApplicationDbContext context,
+        JwtService jwtService,
+        EmailSenderService emailSenderService,
+        HtmlTemplateService htmlTemplateService,
+        IConfiguration config
+        )
     {
         _context = context;
         _jwtService = jwtService;
         _emailSenderService = emailSenderService;
+        _htmlTemplateService = htmlTemplateService;
+
+        //App name from configuration setting
+        _appName = config.GetValue<string>("AppSettings:AppName")
+            ?? throw new KeyNotFoundException("App name not found in config.");
+
     }
 
     public async Task<UserDto> Register(AddUserDto addUserDto)
     {
         //first check if there aren't any users with registered with the provided email
-       bool doesUserExist = await _context.Users.AnyAsync(u => u.Email.Equals(addUserDto.Email));
+        bool doesUserExist = await _context.Users.AnyAsync(u => u.Email.Equals(addUserDto.Email));
         if (doesUserExist) throw new InvalidOperationException("An account with this email already exists.");
 
 
@@ -51,7 +65,7 @@ public class AuthService
         if (user is null) throw new KeyNotFoundException("User with the provided email does not exist.");
 
         //check if the provided password is correct
-        bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(loginUserDto.Password,user.Password);
+        bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(loginUserDto.Password, user.Password);
         if (!isPasswordCorrect) throw new UnauthorizedAccessException("The provided password is incorrect.");
 
         //if we're here, then everything is good
@@ -86,7 +100,14 @@ public class AuthService
         //first, generate a random six OTP to send to the user
         string optValue = GenerateRandomOtp();
 
+        //get user details
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(emailVerificationDto.Email));
+        if (user is null)
+            throw new KeyNotFoundException($@"User with email ""{emailVerificationDto.Email}"" does not exist.");
 
+        // send email to user
+        var emailHtmlTemplate = _htmlTemplateService.EmailConfirmationTemplate(optValue, user.Name, _appName);
+        await _emailSenderService.SendEmail(user.Name, user.Email, "Email Verification", emailHtmlTemplate);
 
 
     }

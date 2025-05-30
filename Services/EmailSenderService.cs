@@ -1,7 +1,7 @@
 ﻿using MimeKit;
 using MailKit.Net.Smtp;
 public class EmailSenderService
-    {
+{
 
     private readonly string _appEmailPassword = string.Empty;
     private readonly string _appEmail = "cratecrarity@gmail.com";
@@ -10,8 +10,12 @@ public class EmailSenderService
 
     public EmailSenderService(IConfiguration config)
     {
-        _appEmailPassword = config.GetValue<string>("Authentication:Gmail:Password") 
-            ?? throw new KeyNotFoundException("Email SMTP client password could not be found.");
+        _appEmailPassword = config.GetValue<string>("Authentication:Gmail:Password")
+            ?? throw new KeyNotFoundException("SMTP password not found in config.");
+
+        _appName = config.GetValue<string>("AppSettings:AppName")
+            ?? throw new KeyNotFoundException("App name not found in config.");
+
     }
 
 
@@ -29,17 +33,17 @@ public class EmailSenderService
             Text = message
         };
 
-        using(var client = new SmtpClient())
+        using (var client = new SmtpClient())
         {
             client.Connect("smtp.gmail.com, 587, false");
 
             client.Authenticate(_appEmail, _appEmailPassword);
 
-           await client.SendAsync(messageToSend);
+            await client.SendAsync(messageToSend);
 
             client.Disconnect(true);
         }
 
     }
-    }
+}
 

@@ -125,8 +125,10 @@ public class AuthService
 
         await _context.SaveChangesAsync();
 
-
     }
+
+    //Verify email by checking if the provided OTP is valid 
+    public async Task VerifyEmail
 
 
 }

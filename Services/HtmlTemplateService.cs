@@ -1,5 +1,5 @@
 ﻿
-    public class HtmlTemplateService
+public class HtmlTemplateService
     {
 
     //Template for resetting password
@@ -57,7 +57,7 @@
     }
 
     //Template for confirming email
-    public string EmailConfirmationTemplate(string url, string name, string appName)
+    public string EmailConfirmationTemplate(string otp, string name, string appName)
     {
         return $@"
 <!DOCTYPE html>
@@ -90,17 +90,16 @@
         <div>
           <p>Hi {name},</p>
           <p>
-          To ensure continued access to your car wash account, please verify your email address using the button below.
+          Please verify your email address by entering the one-time password (OTP) below:
           </p>
+          <p>Your verification code: {otp}</p>
           <p>Best regards,</p>
           <p>{appName}</p>
         </div>
         <div>
-          <a href=""{url}"" class=""btn btn-dark""
-            >Confirm</a
-          >
+          
           <p class=""text-muted small"">
-            If this wasn’t you, please disregard this message.
+            This code will expire in 10 minutes. If this wasn’t you, please disregard this message.
           </p>
         </div>
       </div>

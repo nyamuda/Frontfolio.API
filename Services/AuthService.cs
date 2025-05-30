@@ -118,8 +118,8 @@ public class AuthService
             Email = user.Email,
             OtpCode = hashedOpt,
             ExpirationTime = DateTime.UtcNow.AddMinutes(10),
-            IsUsed=false,
-            UserId=user.Id
+            IsUsed = false,
+            UserId = user.Id
 
         };
 
@@ -128,8 +128,10 @@ public class AuthService
         await _context.SaveChangesAsync();
 
     }
-
-    //Verify email by checking if the provided OTP is valid 
+    /// <summary>
+    /// Verifies a user's email address by checking the provided OTP code.
+    /// </summary>
+    /// <param name="verifyEmailDto">The DTO containing the user's email and OTP code.</param>
     public async Task VerifyEmail(VerifyEmailDto verifyEmailDto)
     {
         //check if user with given email exists
@@ -138,9 +140,28 @@ public class AuthService
             throw new KeyNotFoundException($@"User with email ""{verifyEmailDto.Email}"" does not exist.");
 
         //Check if the OTP code exists, hasn't expired, and belongs to the user
-        bool isOtpCodeValid = await _context.UserOtps.AnyAsync(
-
+        var userOpt = await _context.UserOtps
+            .Where(o => o.Email.Equals(user.Email) &&
+            o.ExpirationTime > DateTime.UtcNow &&
+            !o.IsUsed
             )
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (userOpt is null) throw new InvalidOperationException("Invalid OTP code");
+
+        //The saved Opt code is hashed,
+        //check if the provided OTP matched the saved one
+        bool isOptCorrect = BCrypt.Net.BCrypt.Verify(verifyEmailDto.OtpCode, userOpt.OtpCode);
+        if(!isOptCorrect) throw new UnauthorizedAccessException("The provided OTP code is incorrect.");
+
+        //If we're able to get here, then the provided OTP code is valid
+        //Finally,mark the user as verified and the OPT as used
+        user.isVerified = true;
+        userOpt.IsUsed = true;
+
+        await _context.SaveChangesAsync();
+
     }
 
 

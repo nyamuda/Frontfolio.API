@@ -111,10 +111,12 @@ public class AuthService
         await _emailSenderService.SendEmail(user.Name, user.Email, "Email Verification", emailHtmlTemplate);
 
         //Once the email is sent, save the OTP to the database
+        ///Hash the OTP
+        var hashedOpt = BCrypt.Net.BCrypt.HashPassword(optValue);
         UserOtp userOtp = new()
         {
             Email = user.Email,
-            OtpCode = optValue,
+            OtpCode = hashedOpt,
             ExpirationTime = DateTime.UtcNow.AddMinutes(10),
             IsUsed=false,
             UserId=user.Id
@@ -130,8 +132,15 @@ public class AuthService
     //Verify email by checking if the provided OTP is valid 
     public async Task VerifyEmail(VerifyEmailDto verifyEmailDto)
     {
+        //check if user with given email exists
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(verifyEmailDto.Email));
+        if (user is null)
+            throw new KeyNotFoundException($@"User with email ""{verifyEmailDto.Email}"" does not exist.");
+
         //Check if the OTP code exists, hasn't expired, and belongs to the user
-        bool isOtpCodeValid = await _context.
+        bool isOtpCodeValid = await _context.UserOtps.AnyAsync(
+
+            )
     }
 
 

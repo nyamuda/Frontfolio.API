@@ -16,8 +16,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    // GET: api/<AuthController>
-    [HttpGet("register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register(AddUserDto addUserDto)
     {
        
@@ -40,8 +39,8 @@ public class AuthController : ControllerBase
 
     }
 
-    // GET api/<AuthController>/5
-    [HttpGet("login")]
+    
+    [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDto loginUserDto)
     {
         try
@@ -71,22 +70,30 @@ public class AuthController : ControllerBase
         }
     }
 
-    // POST api/<AuthController>
-    [HttpPost]
-    public void Post([FromBody] string value)
+    [HttpPost("email-verification/request")]
+    public async Task<IActionResult> EmailVerificationRequest(EmailVerificationRequestDto emailVerificationRequestDto)
     {
-    }
+        try
+        {
+            await _authService.EmailConfirmationRequest(emailVerificationRequestDto);
 
-    // PUT api/<AuthController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
+            return NoContent();
 
-    // DELETE api/<AuthController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
+        }
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
     }
 }
 

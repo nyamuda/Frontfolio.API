@@ -62,7 +62,7 @@ public class AuthService
     {
         //check if the user with given email exists
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(loginUserDto.Email));
-        if (user is null) throw new KeyNotFoundException("User with the provided email does not exist.");
+        if (user is null) throw new KeyNotFoundException($@"User with email ""{loginUserDto.Email}"" does not exist.");
 
         //check if the provided password is correct
         bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(loginUserDto.Password, user.Password);

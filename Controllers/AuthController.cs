@@ -41,10 +41,34 @@ public class AuthController : ControllerBase
     }
 
     // GET api/<AuthController>/5
-    [HttpGet("users/{id}")]
-    public string GetUserById(int id)
+    [HttpGet("login")]
+    public async Task<IActionResult> Login(LoginUserDto loginUserDto)
     {
-        return "value";
+        try
+        {
+            string token = await _authService.Login(loginUserDto);
+
+            return Ok(token);
+
+        }
+        catch(UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
     }
 
     // POST api/<AuthController>

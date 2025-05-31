@@ -100,10 +100,13 @@ public class AuthController : ControllerBase
 
     //Verify user email using the provided OTP code
     [HttpPost("email-verification/verify")]
-    public async Task<IActionResult> VerifyEmailWithOptCode()
+    public async Task<IActionResult> VerifyEmailWithOptCode(VerifyEmailDto verifyEmailDto)
     {
         try
         {
+            await _authService.VerifyEmailUsingOtpCode(verifyEmailDto);
+
+            return NoContent();
 
         }
         catch(InvalidOperationException ex)

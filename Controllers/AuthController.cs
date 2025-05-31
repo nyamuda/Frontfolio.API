@@ -70,6 +70,7 @@ public class AuthController : ControllerBase
         }
     }
 
+    //Send an email verification email to a user
     [HttpPost("email-verification/request")]
     public async Task<IActionResult> EmailVerificationRequest(EmailVerificationRequestDto emailVerificationRequestDto)
     {
@@ -93,6 +94,36 @@ public class AuthController : ControllerBase
             };
 
             return StatusCode(500, response);
+        }
+    }
+
+
+    //Verify user email using the provided OTP code
+    [HttpPost("email-verification/verify")]
+    public async Task<IActionResult> VerifyEmailWithOptCode()
+    {
+        try
+        {
+
+        }
+        catch(InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            var response = new { message = ErrorMessageHelper.UnexpectedErrorMessage(), details = ex.Message };
+
+            return StatusCode(500, response);
+
         }
     }
 }

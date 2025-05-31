@@ -132,7 +132,7 @@ public class AuthService
     /// Verifies a user's email address by checking the provided OTP code.
     /// </summary>
     /// <param name="verifyEmailDto">The DTO containing the user's email and OTP code.</param>
-    public async Task VerifyEmail(VerifyEmailDto verifyEmailDto)
+    public async Task VerifyEmailUsingOtpCode(VerifyEmailDto verifyEmailDto)
     {
         //check if user with given email exists
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(verifyEmailDto.Email));

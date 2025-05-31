@@ -1,4 +1,5 @@
 ﻿using Frontfolio.API.Dtos.Auth;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,7 +25,7 @@ public class AuthController : ControllerBase
         {
             var userDto = await _authService.Register(addUserDto);
 
-            return CreatedAtAction()
+            return CreatedAtRoute(routeName: "GetUserById", routeValues: new { id = userDto.Id }, value: userDto);
         }
 
         catch (InvalidOperationException ex)

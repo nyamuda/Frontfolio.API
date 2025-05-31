@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
     }
 
     //Get user by ID
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name ="GetUserById")]
     [Authorize]
     public async Task<IActionResult> Get(int id)
     {
@@ -31,7 +31,8 @@ public class UsersController : ControllerBase
             //validate the token 
             ClaimsPrincipal claimsPrincipal = _jwtService.ValidateJwtToken(accessToken);
             //The ID of the user from the token
-            string tokenUserId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new KeyNotFoundException("Access token lacks the name identifier claim.");
+            string tokenUserId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier) 
+                ?? throw new KeyNotFoundException("Access token lacks the name identifier claim.");
              
             //For a user to access this resource
             //the ID from their access token must match the ID of the user they're trying to access

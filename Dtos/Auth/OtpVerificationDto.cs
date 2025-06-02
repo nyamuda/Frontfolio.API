@@ -1,8 +1,10 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 
-public class VerifyEmailDto
-    {
+//OTP verification
+//Used to verify email address or reset password
+public class OtpVerificationDto
+{
     [Required]
     [MinLength(6)]
     [MaxLength(6)]

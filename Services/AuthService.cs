@@ -167,21 +167,21 @@ public class AuthService
 
 
     //Make a request to reset password
-    public async Task PasswordResetRequest(EmailVerificationRequestDto emailVerificationDto)
+    public async Task PasswordResetRequest(PasswordResetRequestDto resetRequestDto)
     {
 
         //first, generate a random six OTP to send to the user
         string optValue = GenerateRandomOtp();
 
         //get user details
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(emailVerificationDto.Email));
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(resetRequestDto.Email));
         if (user is null)
-            throw new KeyNotFoundException($@"User with email ""{emailVerificationDto.Email}"" does not exist.");
+            throw new KeyNotFoundException($@"User with email ""{resetRequestDto.Email}"" does not exist.");
 
-        //HTML template for email verification
-        var emailHtmlTemplate = _htmlTemplateService.EmailConfirmationTemplate(optValue, user.Name, _appName);
+        //HTML template for password rest
+        var emailHtmlTemplate = _htmlTemplateService.PasswordResetTemplate(optValue, user.Name, _appName);
         //send email to user
-        await _emailSenderService.SendEmail(user.Name, user.Email, "Email Verification", emailHtmlTemplate);
+        await _emailSenderService.SendEmail(user.Name, user.Email, "Password Reset", emailHtmlTemplate);
 
         //Once the email is sent, save the OTP to the database
         ///Hash the OTP

@@ -128,6 +128,8 @@ public class AuthService
         await _context.SaveChangesAsync();
 
     }
+
+
     /// <summary>
     /// Verifies a user's email address by checking the provided OTP code.
     /// </summary>
@@ -138,8 +140,7 @@ public class AuthService
         //verify the provided OTP
         await _otpService.VerifyUserOtp(otpVerificationDto);
 
-        //If we're able to get here, then the provided OTP code is valid  
-  
+        //If we're able to get here, then the provided OTP code is valid.  
         //Check if user with given email exists
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
         if (user is null)
@@ -165,7 +166,7 @@ public class AuthService
     {
 
         //first, generate a random six OTP to send to the user
-        string optValue = GenerateRandomOtp();
+        string optValue =_otpService.GenerateRandomOtp();
 
         //get user details
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(resetRequestDto.Email));

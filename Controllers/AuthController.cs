@@ -100,11 +100,11 @@ public class AuthController : ControllerBase
 
     //Verify user email using the provided OTP code
     [HttpPost("email-verification/verify")]
-    public async Task<IActionResult> VerifyEmailWithOptCode(VerifyEmailDto verifyEmailDto)
+    public async Task<IActionResult> VerifyEmailWithOptCode(OtpVerificationDto verificationDto)
     {
         try
         {
-            await _authService.VerifyEmailUsingOtpCode(verifyEmailDto);
+            await _authService.VerifyEmailUsingOtp(verificationDto);
 
             return NoContent();
 
@@ -127,6 +127,31 @@ public class AuthController : ControllerBase
 
             return StatusCode(500, response);
 
+        }
+    }
+    //Send a request to reset password
+    [HttpPost("password-reset/request")]
+    public async Task<IActionResult> PasswordResetRequest(PasswordResetRequestDto resetRequestDto)
+    {
+        try
+        {
+            await _authService.PasswordResetRequest(resetRequestDto);
+
+            return NoContent();
+
+        }
+        catch(KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+            return StatusCode(500, response);
         }
     }
 }

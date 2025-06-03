@@ -39,16 +39,12 @@ public class OtpService
     /// <remarks>
     /// This method ensures that only the latest unused and unexpired OTP is checked. Stored OTPs are hashed for security.
     /// </remarks>
-    public async Task<UserOtp> VerifyUserOtp(OtpVerificationDto otpVerificationDto)
+    public async Task VerifyUserOtp(OtpVerificationDto otpVerificationDto)
     {
-        //check if user with given email exists
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
-        if (user is null)
-            throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
-
+        
         // Retrieve the most recent valid OTP that hasn't expired or been used
         var userOtp = await _context.UserOtps
-            .Where(o => o.Email.Equals(user.Email) &&
+            .Where(o => o.Email.Equals(otpVerificationDto.Email) &&
             o.ExpirationTime > DateTime.UtcNow &&
             !o.IsUsed
             )
@@ -59,11 +55,14 @@ public class OtpService
 
         //The saved OTP code is hashed
         //Check if the provided OTP matched the saved one
-        bool isOptCorrect = BCrypt.Net.BCrypt.Verify(otpVerificationDto.OtpCode, userOpt.OtpCode);
+        bool isOptCorrect = BCrypt.Net.BCrypt.Verify(otpVerificationDto.OtpCode, userOtp.OtpCode);
         if (!isOptCorrect) throw new UnauthorizedAccessException("Invalid OTP. Please check the code and try again.");
 
-        //return the user OTP
-        return userOtp;
+        //mark the OTP as used
+        userOtp.IsUsed = true;
+
+        await _context.SaveChangesAsync();
+      
     }
 }
 

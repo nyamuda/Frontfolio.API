@@ -138,11 +138,15 @@ public class AuthService
         //verify the provided OTP
         await _otpService.VerifyUserOtp(otpVerificationDto);
 
-        //If we're able to get here, then the provided OTP code is valid
-        //Finally, mark the user as verified and the OPT as used
-        user.isVerified = true;
-        userOpt.IsUsed = true;
+        //If we're able to get here, then the provided OTP code is valid  
+  
+        //Check if user with given email exists
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
+        if (user is null)
+            throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
 
+        //Finally, mark the user as verified
+        user.isVerified = true;
         await _context.SaveChangesAsync();
 
     }

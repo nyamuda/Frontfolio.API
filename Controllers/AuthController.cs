@@ -188,5 +188,35 @@ public class AuthController : ControllerBase
             return StatusCode(500, response);
         }
     }
+    //Reset user password using reset token
+    [HttpPatch("password-reset/reset")]
+    public async Task<IActionResult> ResetUserPassword(ResetPasswordDto resetPasswordDto)
+    {
+        try
+        {
+            await _authService.ResetPassword(resetPasswordDto);
+
+            return NoContent();
+
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+            return StatusCode(500, response);
+        }
+
+    }
 }
 

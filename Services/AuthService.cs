@@ -82,9 +82,6 @@ public class AuthService
     }
 
 
-  
-
-
 
     /// <summary>
     /// Handles an email verification request by generating a secure OTP, sending it to the user via email,
@@ -233,7 +230,7 @@ public class AuthService
         //once the token is validated,
         //grab the user ID and get the details of the user using that ID
         string userId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
-            ?? throw new KeyNotFoundException("Password reset token is missing name identifier claim.");
+            ?? throw new KeyNotFoundException("Password reset token is missing the name identifier claim.");
 
         User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(int.Parse(userId)));
 

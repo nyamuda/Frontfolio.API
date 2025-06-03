@@ -79,19 +79,7 @@ public class AuthService
     }
 
 
-    //Generate a secure six figure random one time password (OTP)
-    public string GenerateRandomOtp()
-    {
-
-        // Generate a cryptographically secure random integer number between 0 and 999 999
-        int randomNumber = RandomNumberGenerator.GetInt32(0, 1_000_000);
-
-        //Make sure the OTP always has six digits
-        string optValue = randomNumber.ToString("D6");
-
-        return optValue;
-
-    }
+  
 
 
 
@@ -223,8 +211,7 @@ public class AuthService
     /// </summary>
     /// <param name="resetPasswordDto">The DTO containing the new password and the reset token.</param>
     /// <remarks>
-    /// This method securely hashes the new password using BCrypt and updates the user's record
-    /// after validating the token issued during the password reset request.
+    /// This method securely hashes the new password using BCrypt and updates the user's record.
     /// </remarks>
     public async Task ResetPassword(ResetPasswordDto resetPasswordDto)
     {

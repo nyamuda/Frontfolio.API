@@ -11,19 +11,22 @@ public class AuthService
     private readonly EmailSenderService _emailSenderService;
     private readonly HtmlTemplateService _htmlTemplateService;
     private readonly string _appName;
+    private readonly OtpService _otpService;
 
     public AuthService(
         ApplicationDbContext context,
         JwtService jwtService,
         EmailSenderService emailSenderService,
         HtmlTemplateService htmlTemplateService,
-        IConfiguration config
+        IConfiguration config,
+        OtpService otpService
         )
     {
         _context = context;
         _jwtService = jwtService;
         _emailSenderService = emailSenderService;
         _htmlTemplateService = htmlTemplateService;
+        _otpService = otpService;
 
         //App name from configuration setting
         _appName = config.GetValue<string>("AppSettings:AppName")
@@ -95,7 +98,7 @@ public class AuthService
     {
 
         //first, generate a random six OTP to send to the user
-        string optValue = GenerateRandomOtp();
+        string optValue = _otpService.GenerateRandomOtp();
 
         //get user details
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(emailVerificationDto.Email));

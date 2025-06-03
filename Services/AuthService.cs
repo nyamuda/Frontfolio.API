@@ -2,6 +2,7 @@
 using Frontfolio.API.Data;
 using Frontfolio.API.Dtos.Auth;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Security.Cryptography;
 public class AuthService
 {
@@ -200,6 +201,30 @@ public class AuthService
 
         await _context.SaveChangesAsync();
 
+    }
+
+    //Reset the password of a user
+    public async Task ResetPassword(ResetPasswordDto resetPasswordDto)
+    {
+        //first, validate the password reset token
+        ClaimsPrincipal claims = _jwtService.ValidateJwtToken(resetPasswordDto.ResetToken);
+
+        //once the token is validated,
+        //grab the user ID and get the details of the user using that ID
+        string userId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? throw new KeyNotFoundException("Password reset token is missing name identifier claim.");
+
+        User? user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(int.Parse(userId)));
+
+        if (user is null) throw new KeyNotFoundException($"User with ID {userId} does not exist.");
+
+        //hash the password
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(resetPasswordDto.Password);
+
+        //save the new password
+        user.Password = hashedPassword;
+
+        await _context.SaveChangesAsync();
     }
 
 

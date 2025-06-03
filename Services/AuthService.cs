@@ -132,28 +132,9 @@ public class AuthService
     /// Verifies a user's email address by checking the provided OTP code.
     /// </summary>
     /// <param name="otpVerificationDto">The DTO containing the user's email and OTP code.</param>
-    public async Task VerifyEmailUsingOtpCode(OtpVerificationDto otpVerificationDto)
+    public async Task VerifyEmailUsingOtp(OtpVerificationDto otpVerificationDto)
     {
-        //check if user with given email exists
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
-        if (user is null)
-            throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
-
-        // Retrieve the most recent valid OTP that hasn't expired or been used
-        var userOpt = await _context.UserOtps
-            .Where(o => o.Email.Equals(user.Email) &&
-            o.ExpirationTime > DateTime.UtcNow &&
-            !o.IsUsed
-            )
-            .OrderByDescending(o => o.CreatedAt)
-            .FirstOrDefaultAsync();
-
-        if (userOpt is null) throw new InvalidOperationException("No valid or active OTP found for this email.");
-
-        //The saved OTP code is hashed
-        //Check if the provided OTP matched the saved one
-        bool isOptCorrect = BCrypt.Net.BCrypt.Verify(otpVerificationDto.OtpCode, userOpt.OtpCode);
-        if(!isOptCorrect) throw new UnauthorizedAccessException("Invalid OTP. Please check the code and try again.");
+       
 
         //If we're able to get here, then the provided OTP code is valid
         //Finally, mark the user as verified and the OPT as used

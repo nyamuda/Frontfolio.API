@@ -1,5 +1,6 @@
 ﻿
 using Frontfolio.API.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 public class OtpService
@@ -26,6 +27,40 @@ public class OtpService
 
         return optValue;
 
+    }
+
+    /// <summary>
+    /// Verifies a one-time password (OTP) submitted by the user by checking against the most recent active and unused OTP.
+    /// </summary>
+    /// <param name="otpVerificationDto">The DTO containing the user's email and the OTP to verify.</param>
+    /// <exception cref="KeyNotFoundException">Thrown if no user is found with the provided email.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if no valid OTP is found (expired or already used).</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown if the provided OTP does not match the saved code.</exception>
+    /// <remarks>
+    /// This method ensures that only the latest unused and unexpired OTP is checked. Stored OTPs are hashed for security.
+    /// </remarks>
+    public async Task VerifyUserOtp(OtpVerificationDto otpVerificationDto)
+    {
+        //check if user with given email exists
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
+        if (user is null)
+            throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
+
+        // Retrieve the most recent valid OTP that hasn't expired or been used
+        var userOpt = await _context.UserOtps
+            .Where(o => o.Email.Equals(user.Email) &&
+            o.ExpirationTime > DateTime.UtcNow &&
+            !o.IsUsed
+            )
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (userOpt is null) throw new InvalidOperationException("No valid or active OTP found for this email.");
+
+        //The saved OTP code is hashed
+        //Check if the provided OTP matched the saved one
+        bool isOptCorrect = BCrypt.Net.BCrypt.Verify(otpVerificationDto.OtpCode, userOpt.OtpCode);
+        if (!isOptCorrect) throw new UnauthorizedAccessException("Invalid OTP. Please check the code and try again.");
     }
 }
 

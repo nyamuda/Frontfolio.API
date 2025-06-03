@@ -134,7 +134,9 @@ public class AuthService
     /// <param name="otpVerificationDto">The DTO containing the user's email and OTP code.</param>
     public async Task VerifyEmailUsingOtp(OtpVerificationDto otpVerificationDto)
     {
-       
+
+        //verify the provided OTP
+        await _otpService.VerifyUserOtp(otpVerificationDto);
 
         //If we're able to get here, then the provided OTP code is valid
         //Finally, mark the user as verified and the OPT as used

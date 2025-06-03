@@ -94,7 +94,15 @@ public class AuthService
     }
 
 
-    //Make a request to verify email address
+
+    /// <summary>
+    /// Handles an email verification request by generating a secure OTP, sending it to the user via email,
+    /// and saving the hashed OTP in the database.
+    /// </summary>
+    /// <param name="emailVerificationDto">The DTO containing the user's email address.</param>
+    /// <remarks>
+    /// The OTP is valid for 10 minutes and is securely hashed before being stored.
+    /// </remarks>
     public async Task EmailConfirmationRequest(EmailVerificationRequestDto emailVerificationDto)
     {
 
@@ -167,7 +175,14 @@ public class AuthService
 
 
 
-    //Make a request to reset password
+    /// <summary>
+    /// Handles a password reset request by generating a secure OTP, sending it to the user via email,
+    /// and saving the hashed OTP in the database.
+    /// </summary>
+    /// <param name="resetRequestDto">The DTO containing the user's email address.</param>
+    /// <remarks>
+    /// The OTP is valid for 10 minutes and is securely hashed before being stored.
+    /// </remarks>
     public async Task PasswordResetRequest(PasswordResetRequestDto resetRequestDto)
     {
 
@@ -203,7 +218,14 @@ public class AuthService
 
     }
 
-    //Reset the password of a user
+    /// <summary>
+    /// Resets a user's password after validating the reset token.
+    /// </summary>
+    /// <param name="resetPasswordDto">The DTO containing the new password and the reset token.</param>
+    /// <remarks>
+    /// This method securely hashes the new password using BCrypt and updates the user's record
+    /// after validating the token issued during the password reset request.
+    /// </remarks>
     public async Task ResetPassword(ResetPasswordDto resetPasswordDto)
     {
         //first, validate the password reset token

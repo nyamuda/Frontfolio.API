@@ -198,6 +198,27 @@ public class AuthService
     }
 
     /// <summary>
+    /// Verifies the OTP and generates a secure JWT token for password reset if the OTP is valid.
+    /// </summary>
+    /// <param name="otpVerificationDto">DTO containing the user's email and OTP.</param>
+    /// <returns>A JWT token that can be used to reset the user's password.</returns>
+    public async Task<string> VerifyOtpAndGenerateResetToken(OtpVerificationDto otpVerificationDto)
+    {
+        //verify OTP
+        await _otpService.VerifyUserOtp(otpVerificationDto);
+
+        //If the OTP is valid,
+        //generate the password reset token and send it to the client
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
+        if (user is null)
+            throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
+
+        var resetToken = await _jwtService.GenerateJwtToken(userId: user.Id);
+
+        return resetToken;
+    }
+
+    /// <summary>
     /// Resets a user's password after validating the reset token.
     /// </summary>
     /// <param name="resetPasswordDto">The DTO containing the new password and the reset token.</param>
@@ -227,26 +248,7 @@ public class AuthService
         await _context.SaveChangesAsync();
     }
 
-    /// <summary>
-    /// Verifies the OTP and generates a secure JWT token for password reset if the OTP is valid.
-    /// </summary>
-    /// <param name="otpVerificationDto">DTO containing the user's email and OTP.</param>
-    /// <returns>A JWT token that can be used to reset the user's password.</returns>
-    public async Task<string> VerifyOtpAndGenerateResetToken(OtpVerificationDto otpVerificationDto)
-    {
-        //verify OTP
-        await _otpService.VerifyUserOtp(otpVerificationDto);
-
-        //If the OTP is valid,
-        //generate the password reset token and send to the client
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(otpVerificationDto.Email));
-        if (user is null)    
-            throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
-
-        var resetToken = await _jwtService.GenerateJwtToken(userId: user.Id);
-
-        return resetToken;
-    }
+   
 
 
 }

@@ -159,13 +159,15 @@ public class AuthController : ControllerBase
         }
     }
 
-    public async Task<IActionResult> PasswordResetVerifyOtp(OtpVerificationDto otpVerificationDto)
+    //Verifies the OTP and generates a secure JWT token for password reset if the OTP is valid.
+    [HttpPost("password-reset/verify-otp")]
+    public async Task<IActionResult> ValidateOtpAndGenerateResetJwt(OtpVerificationDto otpVerificationDto)
     {
         try
         {
-          
+            var resetToken = await _authService.VerifyOtpAndGenerateResetToken(otpVerificationDto);
 
-            return NoContent();
+            return Ok(resetToken);
 
         }
         catch (InvalidOperationException ex)

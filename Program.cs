@@ -9,6 +9,14 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 //Register services
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<EmailSenderService>();
+builder.Services.AddScoped<HtmlTemplateService>();
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<OtpService>();
+builder.Services.AddScoped<UserService>();
+
+
 
 //add database connection string
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new KeyNotFoundException("Connection string not found.");

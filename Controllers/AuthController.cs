@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
         {
             string token = await _authService.Login(loginUserDto);
 
-            return Ok(token);
+            return Ok(new {token});
 
         }
         catch(UnauthorizedAccessException ex)
@@ -167,7 +167,7 @@ public class AuthController : ControllerBase
         {
             var resetToken = await _authService.VerifyOtpAndGenerateResetToken(otpVerificationDto);
 
-            return Ok(resetToken);
+            return Ok(new { resetToken });
 
         }
         catch (InvalidOperationException ex)

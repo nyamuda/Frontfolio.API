@@ -73,6 +73,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 //root API route and its handler
-app.MapGet("/", () => "Welcome to the Frontfolio API.");
+app.MapGet("/api", () => "Welcome to the Frontfolio API.");
 
 app.Run();

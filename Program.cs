@@ -45,6 +45,20 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
+builder.Services.AddAuthorization();
+
+//Add CORS policy
+var AllowAnyOrigin = "_allowAnyOrigin";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: AllowAnyOrigin, policy =>
+    {
+        policy
+        .AllowAnyOrigin()
+        .AllowAnyHeader();
+
+    });
+});
 
 
 
@@ -63,6 +77,9 @@ if (app.Environment.IsDevelopment())
 }
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
+
+// CORS middleware (should come before any auth)
+app.UseCors(AllowAnyOrigin);
 
 // Authentication middleware
 app.UseAuthentication();

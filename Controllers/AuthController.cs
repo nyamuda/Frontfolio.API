@@ -94,7 +94,7 @@ public class AuthController : ControllerBase
             var response = new
             {
                 message = ErrorMessageHelper.UnexpectedErrorMessage(),
-                details = ex.ToString()
+                details = ex.Message
             };
 
             return StatusCode(500, response);

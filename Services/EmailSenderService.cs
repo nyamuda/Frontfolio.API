@@ -4,7 +4,7 @@ public class EmailSenderService
 {
 
     private readonly string _appEmailPassword = string.Empty;
-    private readonly string _appEmail = "cratecrarity@gmail.com";
+    private readonly string _appEmail = "crateclarity@gmail.com";
     private readonly string _appName = "Frontfolio";
 
 

@@ -35,7 +35,7 @@ public class EmailSenderService
 
         using (var client = new SmtpClient())
         {
-            client.Connect("smtp.gmail.com, 587, false");
+            client.Connect("smtp.gmail.com", 587, false);
 
             client.Authenticate(_appEmail, _appEmailPassword);
 

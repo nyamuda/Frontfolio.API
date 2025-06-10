@@ -90,11 +90,11 @@ public class HtmlTemplateService
         <div>
           <p>Hi {name},</p>
           <p>
-          Please verify your email address by entering the one-time password (OTP) below:
+          To verify your email address, please enter the one-time password (OTP) below:
           </p>
           <p>Your verification code: {otp}</p>
-          <p>Best regards,</p>
-          <p>{appName}</p>
+          <p>Thank you,</p>
+          <p>{appName} Team</p>
         </div>
         <div>
           

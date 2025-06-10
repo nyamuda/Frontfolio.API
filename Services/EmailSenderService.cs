@@ -4,7 +4,7 @@ public class EmailSenderService
 {
 
     private readonly string _appEmailPassword = string.Empty;
-    private readonly string _appEmail = "crateclarity@gmail.com";
+    private readonly string _appEmail = "ptnrlab@gmail.com";
     private readonly string _appName = "Frontfolio";
 
 
@@ -36,6 +36,8 @@ public class EmailSenderService
         using (var client = new SmtpClient())
         {
             client.Connect("smtp.gmail.com", 587, false);
+
+            Console.WriteLine($"seeeeeetings gmail password: {_appEmailPassword}");
 
             client.Authenticate(_appEmail, _appEmailPassword);
 

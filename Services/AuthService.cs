@@ -210,7 +210,7 @@ public class AuthService
         if (user is null)
             throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
 
-        var resetToken = await _jwtService.GenerateJwtToken(userId: user.Id);
+        var resetToken = await _jwtService.GenerateJwtToken(userId: user.Id,30);
 
         return resetToken;
     }

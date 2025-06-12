@@ -37,8 +37,6 @@ public class EmailSenderService
         {
             client.Connect("smtp.gmail.com", 587, false);
 
-            Console.WriteLine($"seeeeeetings gmail password: {_appEmailPassword}");
-
             client.Authenticate(_appEmail, _appEmailPassword);
 
             await client.SendAsync(messageToSend);

@@ -29,6 +29,7 @@ string jwtIssuer = builder.Configuration.GetValue<string>("Authentication:Jwt:Is
 string jwtAudience = builder.Configuration.GetValue<string>("Authentication:Jwt:Audience") ?? throw new KeyNotFoundException("Jwt audience field not found.");
 string jwtKey = builder.Configuration.GetValue<string>("Authentication:Jwt:Key") ?? throw new KeyNotFoundException("Jwt key field not found.");
 
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

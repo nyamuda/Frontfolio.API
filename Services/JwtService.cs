@@ -8,14 +8,14 @@ public class JwtService
 {
     private readonly ApplicationDbContext _context;
     private string _jwtIssuer = string.Empty;
-    private string _jwtAudience =string.Empty ;
+    private string _jwtAudience = string.Empty;
     private SymmetricSecurityKey _securityKey;
-  
+
 
     public JwtService(ApplicationDbContext context, IConfiguration config)
     {
         _context = context;
-       
+
         //get the JWT settings
         _jwtIssuer = config.GetValue<string>("Authentication:Jwt:Issuer") ?? throw new KeyNotFoundException("Jwt issuer field not found.");
         _jwtAudience = config.GetValue<string>("Authentication:Jwt:Audience") ?? throw new KeyNotFoundException("Jwt audience field not found.");
@@ -23,14 +23,14 @@ public class JwtService
 
         //encode the key
         _securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-       
+
     }
 
 
-    public async Task<string> GenerateJwtToken(int userId, double expirationInMinutes=10)
+    public async Task<string> GenerateJwtToken(int userId, double expirationInMinutes = 10)
     {
         //get the details of the user the token is for
-        var user = await  _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
         if (user is null) throw new KeyNotFoundException($"User with ID {userId} does not exist.");
 
         //create the signing credentials
@@ -44,6 +44,8 @@ public class JwtService
             new Claim(ClaimTypes.Email,user.Email),
             new Claim("isVerified",user.isVerified.ToString().ToLower())
         ];
+
+
 
         //finally create the token
         var token = new JwtSecurityToken(
@@ -61,7 +63,9 @@ public class JwtService
 
 
     //Manually validate a Jwt token
-    public ClaimsPrincipal ValidateJwtToken(string token) {
+    public ClaimsPrincipal ValidateJwtToken(string token)
+    {
+
 
         //parameters used to validate the token
         var validationParameters = new TokenValidationParameters

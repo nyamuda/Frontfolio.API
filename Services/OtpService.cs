@@ -51,12 +51,12 @@ public class OtpService
             .OrderByDescending(o => o.CreatedAt)
             .FirstOrDefaultAsync();
 
-        if (userOtp is null) throw new InvalidOperationException("No valid or active OTP found for this email.");
+        if (userOtp is null) throw new InvalidOperationException("Your code has expired or is invalid. Please request a new one.");
 
         //The saved OTP code is hashed
         //Check if the provided OTP matched the saved one
         bool isOptCorrect = BCrypt.Net.BCrypt.Verify(otpVerificationDto.OtpCode, userOtp.OtpCode);
-        if (!isOptCorrect) throw new UnauthorizedAccessException("Invalid OTP. Please check the code and try again.");
+        if (!isOptCorrect) throw new UnauthorizedAccessException("We couldn't verify your OTP. Double-check the code and try again.");
 
         //mark the OTP as used
         userOtp.IsUsed = true;

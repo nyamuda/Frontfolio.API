@@ -16,11 +16,7 @@
 
         public string LiveUrl { get; set; } = default!;
 
-        public List<Paragraph> Background { get; set; } = [];
-
-        public List<Paragraph> Challenges { get; set; } = [];
-
-        public List<Paragraph> Achievements { get; set; } = [];
+        public List<Paragraph> FullDescription { get; set; } = [];
 
 
     }

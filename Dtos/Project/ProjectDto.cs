@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class ProjectDto
 {
-    public int Id { get; set; }
+    public required int Id { get; set; }
  
     public required string Title { get; set; }
  
@@ -21,5 +21,18 @@ public class ProjectDto
     public required ProjectStatus Status { get; set; } 
 
     public List<Paragraph> FullDescription { get; set; } = [];
+
+
+    public ProjectDto MapFrom(Project project)
+    {
+        return new ProjectDto
+        {
+            Id = project.Id,
+            Title = project.Title,
+            Summary = project.Summary,
+            TechStack = project.TechStack,
+
+        };
+    }
 
 }

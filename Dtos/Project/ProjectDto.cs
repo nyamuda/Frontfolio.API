@@ -22,8 +22,12 @@ public class ProjectDto
 
     public List<Paragraph> FullDescription { get; set; } = [];
 
+    public int UserId { get; set; }
 
-    public ProjectDto MapFrom(Project project)
+  
+
+
+    public static ProjectDto MapFrom(Project project)
     {
         return new ProjectDto
         {
@@ -31,6 +35,12 @@ public class ProjectDto
             Title = project.Title,
             Summary = project.Summary,
             TechStack = project.TechStack,
+            GitHubUrl = project.GitHubUrl,
+            ImageUrl = project.ImageUrl,
+            LiveUrl = project.LiveUrl,
+            Status = project.Status,
+            FullDescription = project.FullDescription,
+            UserId = project.UserId,
 
         };
     }

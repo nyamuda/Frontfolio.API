@@ -28,14 +28,20 @@ using Microsoft.EntityFrameworkCore;
 
 
         //A Project can have many Paragraphs and a paragraph can only belong to one Project
-        //So, there is a one=many relationship between Project and Paragraph
+        //So, there is a one-many relationship between Project and Paragraph
         modelBuilder.Entity<Project>()
             .HasMany(proj => proj.FullDescription)
             .WithOne(par => par.Project)
             .HasForeignKey(par => par.ProjectId)
             .OnDelete(DeleteBehavior.Cascade); //delete Project ->  delete Paragraphs for that project
 
-
+        //A Project can only have one User and a User can have multiple projects
+        //So, there is a many-one relationship between Project and User
+        modelBuilder.Entity<Project>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade); //delete User ->  delete Projects for that user
 
     }
 

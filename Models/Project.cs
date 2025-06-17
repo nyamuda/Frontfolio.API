@@ -16,7 +16,10 @@
 
         public string LiveUrl { get; set; } = default!;
 
+        public ProjectStatus Status { get; set; } =ProjectStatus.Draft;
         public List<Paragraph> FullDescription { get; set; } = [];
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
     }

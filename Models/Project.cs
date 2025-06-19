@@ -17,7 +17,7 @@
         public string LiveUrl { get; set; } = default!;
 
         public ProjectStatus Status { get; set; } =ProjectStatus.Draft;
-        public List<Paragraph> FullDescription { get; set; } = [];
+        public List<Paragraph> Description { get; set; } = [];
 
         public int UserId { get; set; }
 

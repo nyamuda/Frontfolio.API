@@ -20,7 +20,7 @@ public class ProjectDto
 
     public required ProjectStatus Status { get; set; } 
 
-    public List<Paragraph> FullDescription { get; set; } = [];
+    public List<Paragraph> Description { get; set; } = [];
 
     public int UserId { get; set; }
 
@@ -39,7 +39,7 @@ public class ProjectDto
             ImageUrl = project.ImageUrl,
             LiveUrl = project.LiveUrl,
             Status = project.Status,
-            FullDescription = project.FullDescription,
+            Description = project.Description,
             UserId = project.UserId,
 
         };

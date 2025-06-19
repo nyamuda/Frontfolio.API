@@ -30,7 +30,7 @@ using Microsoft.EntityFrameworkCore;
         //A Project can have many Paragraphs and a paragraph can only belong to one Project
         //So, there is a one-many relationship between Project and Paragraph
         modelBuilder.Entity<Project>()
-            .HasMany(proj => proj.FullDescription)
+            .HasMany(proj => proj.Description)
             .WithOne(par => par.Project)
             .HasForeignKey(par => par.ProjectId)
             .OnDelete(DeleteBehavior.Cascade); //delete Project ->  delete Paragraphs for that project

@@ -17,13 +17,22 @@
         public string LiveUrl { get; set; } = default!;
 
         public ProjectStatus Status { get; set; } =ProjectStatus.Draft;
-        public List<Paragraph> Description { get; set; } = [];
+
+        public List<Paragraph> Background { get; set; } = [];
+
+        public List<Challenge> Challenges { get; set; } = [];
+
+        public List<Achievement> Achievements { get; set; } = [];
+
+        public List<Feedback> Feedback { get; set; } = [];
 
         public int UserId { get; set; }
 
         public User? User { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime? UpdatedAt { get; set; }
 
 
     }

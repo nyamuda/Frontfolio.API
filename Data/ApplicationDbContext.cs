@@ -51,6 +51,17 @@ using Microsoft.EntityFrameworkCore;
             .HasForeignKey(c => c.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);  //delete Project ->  delete Challenges for that Project
 
+        //A Project can only have many Achievements and an Achievement can only be for one Project
+        //So, there is a one-many relationship between Project and Achievement
+        modelBuilder.Entity<Achievement>()
+            .HasOne(a => a.Project)
+            .WithMany(p => p.Achievements)
+            .HasForeignKey(a => a.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade); //delete Project ->  delete Achievement for that Project
+
+        //A Project can only have many Challenges and a Challenge can only be for one Project
+        //So, there is a one-many relationship between Project and Challenge
+
 
     }
 

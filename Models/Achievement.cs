@@ -1,13 +1,13 @@
-﻿using Frontfolio.API.Models;
-public class Challenge
-{
+﻿
+using Frontfolio.API.Models;
+
+public class Achievement
+    {
     public int Id { get; set; }
 
     public required string Title { get; set; }
 
-    public required string Problem { get; set; }
-
-    public required string Solution { get; set; }
+    public required string Description { get; set; }
 
     public required int ProjectId { get; set; }
 
@@ -16,7 +16,6 @@ public class Challenge
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime? UpdatedAt { get; set; }
-
 
 }
 

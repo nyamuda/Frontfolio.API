@@ -30,7 +30,7 @@ using Microsoft.EntityFrameworkCore;
         //A Project can have many Paragraphs and a paragraph can only belong to one Project
         //So, there is a one-many relationship between Project and Paragraph
         modelBuilder.Entity<Project>()
-            .HasMany(proj => proj.Description)
+            .HasMany(proj => proj.Background)
             .WithOne(par => par.Project)
             .HasForeignKey(par => par.ProjectId)
             .OnDelete(DeleteBehavior.Cascade); //delete Project ->  delete Paragraphs for that project
@@ -42,6 +42,15 @@ using Microsoft.EntityFrameworkCore;
             .WithMany()
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Cascade); //delete User ->  delete Projects for that user
+
+        //A Project can only have many Challenges and a Challenge can only be for one Project
+        //So, there is a one-many relationship between Project and Challenge
+        modelBuilder.Entity<Project>()
+            .HasMany(p => p.Challenges)
+            .WithOne(c => c.Project)
+            .HasForeignKey(c => c.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);  //delete Project ->  delete Challenges for that Project
+
 
     }
 

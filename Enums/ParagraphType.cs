@@ -4,8 +4,6 @@
 /// </summary>
 public enum ParagraphType
 {
-    ProjectChallenge,
-    ProjectAchievement,
     ProjectBackground,
     BlogSection
 }

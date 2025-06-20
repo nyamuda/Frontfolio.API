@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 
     public DbSet<UserOtp> UserOtps { get; set; } = default!;
 
+    public DbSet<Project> Projects { get; set; } = default!;
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

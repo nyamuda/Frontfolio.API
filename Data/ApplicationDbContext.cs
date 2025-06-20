@@ -18,6 +18,9 @@ using Microsoft.EntityFrameworkCore;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        //Save User Role enum value as a string instead of an int 
+
         //A User can have multiple OTPs and an OTP can only have one User
         //So, there is a one-many relationship between User and UserOtp
         modelBuilder.Entity<User>()

@@ -1,7 +1,10 @@
 ﻿
-    public class User
-    {
-    public int Id { get; set; } 
+using Microsoft.EntityFrameworkCore;
+
+[Index(nameof(Email), IsUnique = true)]
+public class User
+{
+    public int Id { get; set; }
 
     public required string Name { get; set; }
 
@@ -17,5 +20,5 @@
 
     public List<UserOtp> UserOtps { get; set; } = [];
 
-    }
+}
 

@@ -39,7 +39,7 @@ public class ProjectDto
             ImageUrl = project.ImageUrl,
             LiveUrl = project.LiveUrl,
             Status = project.Status,
-            Description = project.Description,
+            Description = project.Background,
             UserId = project.UserId,
 
         };

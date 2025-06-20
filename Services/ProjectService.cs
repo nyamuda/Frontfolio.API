@@ -1,7 +1,6 @@
 ﻿
 using Frontfolio.API.Data;
 using Frontfolio.API.Dtos.Auth;
-using Frontfolio.API.Interfaces;
 using Frontfolio.API.Models;
 using Microsoft.EntityFrameworkCore;
 

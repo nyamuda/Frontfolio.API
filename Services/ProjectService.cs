@@ -14,7 +14,7 @@ public class ProjectService
         _context = context;
     }
 
-    //Get a project with a given ID for a 
+    //Get a project with a given ID 
     public async Task<ProjectDto> GetProjectById(int id)
     {
         var project = await _context.Projects

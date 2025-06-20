@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 
 [Route("api/[controller]")]
@@ -12,7 +13,7 @@ public class ProjectsController : ControllerBase
 
     public ProjectsController(ProjectService projectService, JwtService jwtService)
     {
-        _projectService = projectService; 
+        _projectService = projectService;
         _jwtService = jwtService;
     }
 
@@ -23,6 +24,26 @@ public class ProjectsController : ControllerBase
     {
         try
         {
+            //First, extract the user's access token from the Authorization header
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            //Manually validate the token and then grap the User ID from the token claims
+            ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+
+
+            //Get the project
+            var project = await _projectService.GetProjectById(id);
+
+            // Compare the User ID from the token with the User ID of the project
+            // A user is only allowed to access their own projects.
+            // If the user ID from the token does not match the project owner's ID, deny access.
+            if (project.UserId != int.Parse(tokenUserId))
+                return Forbid("You don't have permission to view this project.");
+
+            return Ok(project);
+
 
         }
         catch (KeyNotFoundException ex)
@@ -35,9 +56,15 @@ public class ProjectsController : ControllerBase
             return Unauthorized(new { message = ex.Message });
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
 
+            return StatusCode(500, response);
         }
 
     }

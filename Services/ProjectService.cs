@@ -1,5 +1,6 @@
 ﻿
 using Frontfolio.API.Data;
+using Frontfolio.API.Dtos.Auth;
 using Frontfolio.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public class ProjectService
         _context = context;
     }
 
-    //Get a project with a given ID
+    //Get a project with a given ID for a 
     public async Task<ProjectDto> GetProjectById(int id)
     {
         var project = await _context.Projects
@@ -24,7 +25,29 @@ public class ProjectService
         return ProjectDto.MapFrom(project);
     }
 
-    p
+    //Get all project for a User with a given ID
+    public async Task<List<ProjectDto>> GetProject(int page, int pageSize,int UserId)
+    {
+
+        List<ProjectDto> projects = await _context.Projects
+             .Where(p => p.UserId.Equals(UserId))
+             .Skip((page-1)*pageSize)
+             .Take(pageSize)
+             .OrderByDescending(p => p.CreatedAt)
+             .Select(p => new ProjectDto {
+                 Id=p.Id,
+                 Title=p.Title,
+                 Summary=p.Summary,
+                 TechStack=p.TechStack,
+                 ImageUrl=p.ImageUrl,
+                 LiveUrl=p.LiveUrl,
+                 GitHubUrl=p.GitHubUrl,
+                 D
+             })
+             
+             
+            
+    }
 
 
 

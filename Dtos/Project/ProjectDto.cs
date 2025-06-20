@@ -18,13 +18,23 @@ public class ProjectDto
 
     public string? LiveUrl { get; set; } 
 
-    public required ProjectStatus Status { get; set; } 
+    public required ProjectStatus Status { get; set; }
 
-    public List<Paragraph> Description { get; set; } = [];
+    public List<Paragraph> Background { get; set; } = [];
+
+    public List<Challenge> Challenges { get; set; } = [];
+
+    public List<Achievement> Achievements { get; set; } = [];
+
+    public List<Feedback> Feedback { get; set; } = [];
 
     public int UserId { get; set; }
 
-  
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime? UpdatedAt { get; set; }
+
+
 
     //Map from Project to ProjectDto
     public static ProjectDto MapFrom(Project project)
@@ -39,8 +49,13 @@ public class ProjectDto
             ImageUrl = project.ImageUrl,
             LiveUrl = project.LiveUrl,
             Status = project.Status,
-            Description = project.Background,
+            Background = project.Background,
+            Challenges=project.Challenges,
+            Achievements=project.Achievements,
+            Feedback=project.Feedback,
             UserId = project.UserId,
+            CreatedAt=project.CreatedAt,
+            UpdatedAt=project.UpdatedAt
 
         };
     }

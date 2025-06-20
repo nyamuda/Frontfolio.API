@@ -26,8 +26,20 @@ public class ProjectService
         return ProjectDto.MapFrom(project);
     }
 
-    //Get all project for a User with a given ID
-    public async Task<List<ProjectDto>> GetProject(int page, int pageSize,int UserId)
+    /// <summary>
+    /// Gets all the projects for a user with a given ID.
+    /// Supports pagination by returning only a specific page of results,
+    /// along with paging information indicating if more projects exist.
+    /// </summary>
+    /// <param name="page">The current page number (1-based).</param>
+    /// <param name="pageSize">The number of projects to return per page.</param>
+    /// <param name="UserId">The unique identifier of the user whose projects are being retrieved.</param>
+    /// <returns>
+    /// A tuple containing:
+    /// - A list of <see cref="ProjectDto"/> objects for the specified page.
+    /// - A <see cref="PageInfo"/> object with pagination metadata.
+    /// </returns>
+    public async Task<(List<ProjectDto> projects,PageInfo pageInfo)> GetProject(int page, int pageSize, int UserId)
     {
 
         List<ProjectDto> projects = await _context.Projects
@@ -50,12 +62,14 @@ public class ProjectService
              }).ToListAsync();
 
         //check if there are still more projects for the user
-        int totalProjects = await _context.Projects.Where(p =>p.UserId.Equals(UserId)).CountAsync();
+        int totalProjects = await _context.Projects.Where(p => p.UserId.Equals(UserId)).CountAsync();
         bool hasMore = totalProjects > page * pageSize;
 
-      
-                     
-            
+        PageInfo pageInfo = new() { Page = page, PageSize = pageSize, HasMore = hasMore };
+
+        return (projects, pageInfo);
+
+
     }
 
 

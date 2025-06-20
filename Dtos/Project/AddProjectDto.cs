@@ -1,29 +1,37 @@
 ﻿
+using Frontfolio.API.Models;
 using System.ComponentModel.DataAnnotations;
 
 public class AddProjectDto
     {
 
     [Required]
-    public required string Title { get; set; }
+    public string Title { get; set; }
 
     [Required]
-    public required string Summary { get; set; }
+    public string Summary { get; set; }
 
     [Required]
     [MinLength(1)]
     public List<string> TechStack { get; set; } = [];
-
+    [Url]
     public string? GitHubUrl { get; set; }
-
+    [Url]
     public string? ImageUrl { get; set; }
-
+    [Url]
     public string? LiveUrl { get; set; }
 
-    public required ProjectStatus Status { get; set; } = ProjectStatus.Draft;
+    [Required]
+    public ProjectStatus Status { get; set; }
 
-    public List<ParagraphType> Description { get; set; } = [];
 
+    public List<Paragraph> Background { get; set; } = [];
+
+    public List<Challenge> Challenges { get; set; } = [];
+
+    public List<Achievement> Achievements { get; set; } = [];
+
+    public List<Feedback> Feedback { get; set; } = [];
 
 }
 

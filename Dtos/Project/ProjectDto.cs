@@ -60,4 +60,23 @@ public class ProjectDto
         };
     }
 
+    public static Project MapTo(ProjectDto projectDto)
+    {
+        return new Project
+        {
+            Title = projectDto.Title,
+            Summary = projectDto.Summary,
+            TechStack = projectDto.TechStack,
+            GitHubUrl = projectDto.GitHubUrl,
+            ImageUrl = projectDto.ImageUrl,
+            LiveUrl = projectDto.LiveUrl,
+            Status = projectDto.Status,
+            Background = projectDto.Background,
+            Challenges = projectDto.Challenges,
+            Achievements = projectDto.Achievements,
+            Feedback = projectDto.Feedback,
+
+        };
+    }
+
 }

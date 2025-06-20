@@ -39,7 +39,7 @@ public class ProjectService
     /// - A list of <see cref="ProjectDto"/> objects for the specified page.
     /// - A <see cref="PageInfo"/> object with pagination metadata.
     /// </returns>
-    public async Task<(List<ProjectDto> projects,PageInfo pageInfo)> GetProject(int page, int pageSize, int UserId)
+    public async Task<(List<ProjectDto> projects, PageInfo pageInfo)> GetProject(int page, int pageSize, int UserId)
     {
 
         List<ProjectDto> projects = await _context.Projects
@@ -69,7 +69,16 @@ public class ProjectService
 
         return (projects, pageInfo);
 
+    }
 
+    //Add a new project
+    public async Task<ProjectDto> AddProject(int userId, AddProjectDto addProjectDto)
+    {
+        //check if user with the given ID exist
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        if (user is null) throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist");
+
+        Project project = new() {t}
     }
 
 

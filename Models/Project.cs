@@ -10,11 +10,11 @@
 
         public List<string> TechStack { get; set; } = [];
 
-        public string GitHubUrl { get; set; } = default!;
+        public string? GitHubUrl { get; set; }
 
-        public string ImageUrl { get; set; } = default!;
+        public string? ImageUrl { get; set; } 
 
-        public string LiveUrl { get; set; } = default!;
+        public string? LiveUrl { get; set; } 
 
         public ProjectStatus Status { get; set; } =ProjectStatus.Draft;
 

@@ -1,6 +1,7 @@
 ﻿
 using Frontfolio.API.Data;
 using Frontfolio.API.Dtos.Auth;
+using Frontfolio.API.Interfaces;
 using Frontfolio.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,8 +48,13 @@ public class ProjectService
                  CreatedAt = p.CreatedAt,
                  UpdatedAt = p.UpdatedAt
              }).ToListAsync();
-             
-             
+
+        //check if there are still more projects for the user
+        int totalProjects = await _context.Projects.Where(p =>p.UserId.Equals(UserId)).CountAsync();
+        bool hasMore = totalProjects > page * pageSize;
+
+      
+                     
             
     }
 

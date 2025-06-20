@@ -31,19 +31,22 @@ public class ProjectService
 
         List<ProjectDto> projects = await _context.Projects
              .Where(p => p.UserId.Equals(UserId))
-             .Skip((page-1)*pageSize)
+             .Skip((page - 1) * pageSize)
              .Take(pageSize)
              .OrderByDescending(p => p.CreatedAt)
-             .Select(p => new ProjectDto {
-                 Id=p.Id,
-                 Title=p.Title,
-                 Summary=p.Summary,
-                 TechStack=p.TechStack,
-                 ImageUrl=p.ImageUrl,
-                 LiveUrl=p.LiveUrl,
-                 GitHubUrl=p.GitHubUrl,
-                 D
-             })
+             .Select(p => new ProjectDto
+             {
+                 Id = p.Id,
+                 Title = p.Title,
+                 Summary = p.Summary,
+                 Status = p.Status,
+                 TechStack = p.TechStack,
+                 ImageUrl = p.ImageUrl,
+                 LiveUrl = p.LiveUrl,
+                 GitHubUrl = p.GitHubUrl,
+                 CreatedAt = p.CreatedAt,
+                 UpdatedAt = p.UpdatedAt
+             }).ToListAsync();
              
              
             

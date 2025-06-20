@@ -18,6 +18,7 @@ public class ProjectsController : ControllerBase
     }
 
 
+    
     [HttpGet("{id}")]
     [Authorize]
     public async Task<IActionResult> Get(int id)
@@ -43,6 +44,53 @@ public class ProjectsController : ControllerBase
                 return Forbid("You don't have permission to view this project.");
 
             return Ok(project);
+
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
+
+    }
+
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Get(int page=1,int pageSize=5)
+    {
+        try
+        {
+            //First, extract the user's access token from the Authorization header
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            //Manually validate the token and then grap the User ID from the token claims
+            ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+
+
+            //Get all the project for a user with the given ID
+            var projects = await _projectService.GetProjects(page:page,pageSize:pageSize,userId:int.Parse(tokenUserId));
+        
+
+            return Ok(projects);
 
 
         }

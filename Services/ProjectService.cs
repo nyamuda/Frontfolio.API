@@ -38,11 +38,11 @@ public class ProjectService
     /// - A list of <see cref="ProjectDto"/> objects for the specified page.
     /// - A <see cref="PageInfo"/> object with pagination metadata.
     /// </returns>
-    public async Task<(List<ProjectDto> projects, PageInfo pageInfo)> GetProject(int page, int pageSize, int UserId)
+    public async Task<(List<ProjectDto> projects, PageInfo pageInfo)> GetProjects(int page, int pageSize, int userId)
     {
 
         List<ProjectDto> projects = await _context.Projects
-             .Where(p => p.UserId.Equals(UserId))
+             .Where(p => p.UserId.Equals(userId))
              .Skip((page - 1) * pageSize)
              .Take(pageSize)
              .OrderByDescending(p => p.CreatedAt)
@@ -61,7 +61,7 @@ public class ProjectService
              }).ToListAsync();
 
         //check if there are still more projects for the user
-        int totalProjects = await _context.Projects.Where(p => p.UserId.Equals(UserId)).CountAsync();
+        int totalProjects = await _context.Projects.Where(p => p.UserId.Equals(userId)).CountAsync();
         bool hasMore = totalProjects > page * pageSize;
 
         PageInfo pageInfo = new() { Page = page, PageSize = pageSize, HasMore = hasMore };

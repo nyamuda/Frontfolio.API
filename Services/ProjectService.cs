@@ -78,7 +78,16 @@ public class ProjectService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
         if (user is null) throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist");
 
-        Project project = new() {t}
+        //Map AddProjectDto to Project so that we can save the project to the database
+        Project project = AddProjectDto.MapTo(addProjectDto);
+        //add the user ID
+        project.UserId = userId;
+
+        //save the new project
+        _context.Projects.Add(project);
+        await _context.SaveChangesAsync();
+
+        return ProjectDto.MapFrom(project);
     }
 
 

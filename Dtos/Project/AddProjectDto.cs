@@ -3,7 +3,7 @@ using Frontfolio.API.Models;
 using System.ComponentModel.DataAnnotations;
 
 public class AddProjectDto
-    {
+{
 
     [Required]
     public string Title { get; set; }
@@ -33,5 +33,27 @@ public class AddProjectDto
 
     public List<Feedback> Feedback { get; set; } = [];
 
+
+
+    //Map AddProjectDto to Project
+    public static Project MapTo(AddProjectDto projectDto)
+    {
+        return new Project
+        {
+            Title = projectDto.Title,
+            Summary = projectDto.Summary,
+            TechStack = projectDto.TechStack,
+            GitHubUrl = projectDto.GitHubUrl,
+            ImageUrl = projectDto.ImageUrl,
+            LiveUrl = projectDto.LiveUrl,
+            Status = projectDto.Status,
+            Background = projectDto.Background,
+            Challenges = projectDto.Challenges,
+            Achievements = projectDto.Achievements,
+            Feedback = projectDto.Feedback,
+
+        };
+
+    }
 }
 

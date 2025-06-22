@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;
@@ -21,7 +22,6 @@ public class ProjectsController : ControllerBase
 
 
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<IActionResult> Get(int id)
     {
         try
@@ -73,7 +73,6 @@ public class ProjectsController : ControllerBase
 
 
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> GetProjects(int page = 1, int pageSize = 5)
     {
         try
@@ -118,7 +117,6 @@ public class ProjectsController : ControllerBase
 
     }
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> Post(AddProjectDto addProjectDto)
     {
         try
@@ -160,6 +158,8 @@ public class ProjectsController : ControllerBase
 
     }
 
+    //Update a project
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateProjectDto updateProjectDto)
     {
         try
@@ -176,13 +176,13 @@ public class ProjectsController : ControllerBase
             // A user is only allowed to update their own projects.
             // If the user ID from the token does not match the project owner's ID, deny access.
             var oldProject = await _projectService.GetProjectById(id);
-            if (!oldProject.UserId.Equals(tokenUserId)) return Forbid("You don't have permission to update this project.");
+            if (!oldProject.UserId.Equals(int.Parse(tokenUserId))) 
+                return Forbid("You don't have permission to update this project.");
 
+            //update project
+            await _projectService.UpdateProject(userId: oldProject.UserId, projectId: id, updateProjectDto);
 
-
-
-
-
+            return NoContent();
 
         }
         catch (KeyNotFoundException ex)

@@ -38,7 +38,7 @@ public class UpdateProjectDto
 
 
     //Map AddProjectDto to Project
-    public static Project MapTo(AddProjectDto projectDto)
+    public static Project MapTo(UpdateProjectDto projectDto)
     {
         return new Project
         {

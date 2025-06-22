@@ -18,7 +18,9 @@ public class ProjectService
     public async Task<ProjectDto> GetProjectById(int id)
     {
         var project = await _context.Projects
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id.Equals(id));
+
 
         if (project is null) throw new KeyNotFoundException($"Project with ID {id} doest not exist");
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-public class AddProjectDto
+public class UpdateProjectDto
 {
 
     [Required]
@@ -14,7 +14,7 @@ public class AddProjectDto
     public string Summary { get; set; }
 
     [Required]
-    [MinLength(1,ErrorMessage = "You need to include at least one tool, language, or framework used in this project.")]
+    [MinLength(1, ErrorMessage = "You need to include at least one tool, language, or framework used in this project.")]
     public List<string> TechStack { get; set; } = [];
     [Url]
     public string? GitHubUrl { get; set; }

@@ -17,6 +17,7 @@ builder.Services.AddScoped<HtmlTemplateService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<OtpService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ProjectService>();
 
 
 

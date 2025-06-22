@@ -103,9 +103,12 @@ public class ProjectService
         //Map UpdateProjectDto to Project
         Project updatedProject = UpdateProjectDto.MapTo(updateProjectDto);
         
-        //add the userId and projectId fields
+        //add the userId, projectId fields
         updatedProject.Id = projectId;
         updatedProject.UserId = userId;
+
+        //update the updatedAt field
+        updatedProject.UpdatedAt = DateTime.UtcNow;
 
         //update project
         _context.Projects.Update(updatedProject);

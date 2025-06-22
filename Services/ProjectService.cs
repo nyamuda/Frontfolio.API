@@ -97,9 +97,6 @@ public class ProjectService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
         if (user is null) throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
 
-        //check if project with the given ID exist
-        var oldProject = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId));
-        if (oldProject is null) throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
 
         //Map UpdateProjectDto to Project
         Project updatedProject = UpdateProjectDto.MapTo(updateProjectDto);

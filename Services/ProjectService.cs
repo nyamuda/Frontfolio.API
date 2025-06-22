@@ -91,7 +91,18 @@ public class ProjectService
 
    
     //Update an existing project
-    public async Task UpdateProject()
+    public async Task UpdateProject(int userId,int projectId,UpdateProjectDto updateProjectDto)
+    {
+        //check if user with the given ID exist
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
+        if (user is null) throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
+
+        //check if project with the given ID exist
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+        if (project is null) throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+
+    }
 
 
 

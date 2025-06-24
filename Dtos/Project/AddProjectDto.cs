@@ -21,6 +21,8 @@ public class AddProjectDto
     [Url]
     public string? ImageUrl { get; set; }
     [Url]
+    public string? VideoUrl { get; set; }
+    [Url]
     public string? LiveUrl { get; set; }
 
     [Required]
@@ -47,6 +49,7 @@ public class AddProjectDto
             TechStack = projectDto.TechStack,
             GitHubUrl = projectDto.GitHubUrl,
             ImageUrl = projectDto.ImageUrl,
+            VideoUrl=projectDto.VideoUrl,
             LiveUrl = projectDto.LiveUrl,
             Status = projectDto.Status,
             Background = projectDto.Background,

@@ -16,6 +16,8 @@ public class ProjectDto
 
     public string? ImageUrl { get; set; }
 
+    public string? VideoUrl { get; set; }
+
     public string? LiveUrl { get; set; } 
 
     public required ProjectStatus Status { get; set; }
@@ -47,6 +49,7 @@ public class ProjectDto
             TechStack = project.TechStack,
             GitHubUrl = project.GitHubUrl,
             ImageUrl = project.ImageUrl,
+            VideoUrl=project.VideoUrl,
             LiveUrl = project.LiveUrl,
             Status = project.Status,
             Background = project.Background,

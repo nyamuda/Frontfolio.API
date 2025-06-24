@@ -56,6 +56,7 @@ public class ProjectService
                  Status = p.Status,
                  TechStack = p.TechStack,
                  ImageUrl = p.ImageUrl,
+                 VideoUrl=p.VideoUrl,
                  LiveUrl = p.LiveUrl,
                  GitHubUrl = p.GitHubUrl,
                  CreatedAt = p.CreatedAt,

@@ -6,6 +6,10 @@
 
         public required string Title { get; set; }
 
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
         public required string Summary { get; set; }
 
         public List<string> TechStack { get; set; } = [];

@@ -12,6 +12,10 @@ public class UpdateProjectDto
 
     [Required]
     public string Summary { get; set; }
+    
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
 
     [Required]
     [MinLength(1, ErrorMessage = "You need to include at least one tool, language, or framework used in this project.")]
@@ -45,6 +49,8 @@ public class UpdateProjectDto
         return new Project
         {
             Title = projectDto.Title,
+            StartDate=projectDto.StartDate,
+            EndDate=projectDto.EndDate,
             Summary = projectDto.Summary,
             TechStack = projectDto.TechStack,
             GitHubUrl = projectDto.GitHubUrl,

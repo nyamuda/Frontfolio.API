@@ -7,7 +7,11 @@ public class ProjectDto
     public required int Id { get; set; }
  
     public required string Title { get; set; }
- 
+
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
+
     public required string Summary { get; set; }
     
     public List<string> TechStack { get; set; } = [];
@@ -45,6 +49,8 @@ public class ProjectDto
         {
             Id = project.Id,
             Title = project.Title,
+            StartDate=project.StartDate,
+            EndDate=project.EndDate,
             Summary = project.Summary,
             TechStack = project.TechStack,
             GitHubUrl = project.GitHubUrl,

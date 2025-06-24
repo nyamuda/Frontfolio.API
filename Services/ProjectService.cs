@@ -51,6 +51,8 @@ public class ProjectService
              {
                  Id = p.Id,
                  Title = p.Title,
+                 StartDate=p.StartDate,
+                 EndDate=p.EndDate,
                  Summary = p.Summary,
                  Status = p.Status,
                  TechStack = p.TechStack,

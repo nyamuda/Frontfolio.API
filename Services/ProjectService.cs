@@ -44,9 +44,9 @@ public class ProjectService
 
         List<ProjectDto> projects = await _context.Projects
              .Where(p => p.UserId.Equals(userId))
-             .Skip((page - 1) * pageSize)
-             .Take(pageSize)
              .OrderByDescending(p => p.CreatedAt)
+             .Skip((page - 1) * pageSize)
+             .Take(pageSize)       
              .Select(p => new ProjectDto
              {
                  Id = p.Id,

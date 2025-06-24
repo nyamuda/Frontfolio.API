@@ -14,6 +14,8 @@
 
         public string? ImageUrl { get; set; } 
 
+        public string? VideoUrl { get; set; }
+
         public string? LiveUrl { get; set; } 
 
         public ProjectStatus Status { get; set; } =ProjectStatus.Draft;

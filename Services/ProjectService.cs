@@ -113,6 +113,10 @@ public class ProjectService
         updatedProject.Id = projectId;
         updatedProject.UserId = userId;
 
+        //convert start and end dates to UTC time
+        updatedProject.StartDate = TimeZoneInfo.ConvertTimeToUtc(updatedProject.StartDate);
+        updatedProject.EndDate = TimeZoneInfo.ConvertTimeToUtc(updatedProject.EndDate);
+
         //update the updatedAt field
         updatedProject.UpdatedAt = DateTime.UtcNow;
 

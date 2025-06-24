@@ -49,7 +49,7 @@ public class UpdateProjectDto
             TechStack = projectDto.TechStack,
             GitHubUrl = projectDto.GitHubUrl,
             ImageUrl = projectDto.ImageUrl,
-            VideoUrl=projectDto.VideoUrl,
+            VideoUrl=projectDto.VideoUrl,                   
             LiveUrl = projectDto.LiveUrl,
             Status = projectDto.Status,
             Background = projectDto.Background,

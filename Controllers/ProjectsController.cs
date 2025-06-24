@@ -80,17 +80,17 @@ public class ProjectsController : ControllerBase
             //First, extract the user's access token from the Authorization header
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            //Manually validate the token and then grap the User ID from the token claims
+            //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
                 throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
 
 
-            //Get all the project for a user with the given ID
-            var projects = await _projectService.GetProjects(page: page, pageSize: pageSize, userId: int.Parse(tokenUserId));
+            //Get the paginated projects for a user with the given ID
+           PageInfo<ProjectDto> paginatedProjects = await _projectService
+                .GetProjects(page: page, pageSize: pageSize, userId: int.Parse(tokenUserId));
 
-
-            return Ok(projects);
+            return Ok(paginatedProjects);
 
 
         }

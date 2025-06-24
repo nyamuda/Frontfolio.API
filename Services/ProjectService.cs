@@ -37,10 +37,9 @@ public class ProjectService
     /// <param name="UserId">The unique identifier of the user whose projects are being retrieved.</param>
     /// <returns>
     /// A tuple containing:
-    /// - A list of <see cref="ProjectDto"/> objects for the specified page.
-    /// - A <see cref="PageInfo"/> object with pagination metadata.
+    /// - A <see cref="PageInfo"/> object with pagination metadata and a list of the projects.
     /// </returns>
-    public async Task<(List<ProjectDto> projects, PageInfo pageInfo)> GetProjects(int page, int pageSize, int userId)
+    public async Task<PageInfo<ProjectDto>> GetProjects(int page, int pageSize, int userId)
     {
 
         List<ProjectDto> projects = await _context.Projects
@@ -67,9 +66,9 @@ public class ProjectService
         int totalProjects = await _context.Projects.Where(p => p.UserId.Equals(userId)).CountAsync();
         bool hasMore = totalProjects > page * pageSize;
 
-        PageInfo pageInfo = new() { Page = page, PageSize = pageSize, HasMore = hasMore };
+        PageInfo<ProjectDto> pageInfo = new() { Page = page, PageSize = pageSize, HasMore = hasMore, Items=projects };
 
-        return (projects, pageInfo);
+        return pageInfo;
 
     }
 

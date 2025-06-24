@@ -86,6 +86,10 @@ public class ProjectService
         //add the user ID
         project.UserId = userId;
 
+        //convert start and end dates to UTC time
+        project.StartDate = TimeZoneInfo.ConvertTimeToUtc(project.StartDate);
+        project.EndDate = TimeZoneInfo.ConvertTimeToUtc(project.EndDate);
+
         //save the new project
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();

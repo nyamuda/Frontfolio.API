@@ -41,12 +41,16 @@ public class ProjectsController : ControllerBase
             // Compare the User ID from the token with the User ID of the project
             // A user is only allowed to access their own projects.
             // If the user ID from the token does not match the project owner's ID, deny access.
-            if (project.UserId != int.Parse(tokenUserId))
-                return Forbid("You don't have permission to view this project.");
+            if (int.TryParse(tokenUserId, out int userId))
+            {
+                if (project.UserId != userId)
+                    return Forbid("You don't have permission to view this project.");
 
-            return Ok(project);
+                return Ok(project);
+            }
 
-
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
         }
         catch (KeyNotFoundException ex)
         {
@@ -73,7 +77,7 @@ public class ProjectsController : ControllerBase
 
 
     [HttpGet]
-    public async Task<IActionResult> GetProjects(int page = 1, int pageSize = 5)
+    public async Task<IActionResult> GetProjects(ProjectSortOption? sortBy, int page = 1, int pageSize = 5)
     {
         try
         {
@@ -85,18 +89,17 @@ public class ProjectsController : ControllerBase
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
                 throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
 
-
             //Get the paginated projects for a user with the given ID
-           if(int.TryParse(tokenUserId, out int userId))
+            if (int.TryParse(tokenUserId, out int userId))
             {
                 PageInfo<ProjectDto> paginatedProjects = await _projectService
-                .GetProjects(page: page, pageSize: pageSize, userId: userId);
+                .GetProjects(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy);
 
                 return Ok(paginatedProjects);
             }
-
+            //throw an exception if tokenUserId cannot be parsed
             throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
-            
+
         }
         catch (KeyNotFoundException ex)
         {
@@ -180,7 +183,7 @@ public class ProjectsController : ControllerBase
             // A user is only allowed to update their own projects.
             // If the user ID from the token does not match the project owner's ID, deny access.
             var oldProject = await _projectService.GetProjectById(id);
-            if (!oldProject.UserId.Equals(int.Parse(tokenUserId))) 
+            if (!oldProject.UserId.Equals(int.Parse(tokenUserId)))
                 return Forbid("You don't have permission to update this project.");
 
             //update project

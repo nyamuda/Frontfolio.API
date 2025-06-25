@@ -87,13 +87,16 @@ public class ProjectsController : ControllerBase
 
 
             //Get the paginated projects for a user with the given ID
-           PageInfo<ProjectDto> paginatedProjects = await _projectService
-                .GetProjects(page: page, pageSize: pageSize, userId: int.Parse(tokenUserId));
+           if(int.TryParse(tokenUserId, out int userId))
+            {
+                PageInfo<ProjectDto> paginatedProjects = await _projectService
+                .GetProjects(page: page, pageSize: pageSize, userId: userId);
 
+                return Ok(paginatedProjects);
+            }
 
-            return Ok(paginatedProjects);
-
-
+            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            
         }
         catch (KeyNotFoundException ex)
         {

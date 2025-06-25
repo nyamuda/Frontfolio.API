@@ -14,7 +14,10 @@ public class AddProjectDto
     /// Determines the custom display order of projects in the UI.
     /// Lower values appear first.
     /// </summary>
+    
     public int? SortOrder { get; set; }
+    
+    public ProjectDifficultyLevel DifficultyLevel { get; set; } 
 
     [Required]
     public string Summary { get; set; }
@@ -56,6 +59,7 @@ public class AddProjectDto
         {
             Title = projectDto.Title,
             SortOrder=projectDto.SortOrder,
+            DifficultyLevel=projectDto.DifficultyLevel,
             StartDate=projectDto.StartDate,
             EndDate=projectDto.EndDate,
             Summary = projectDto.Summary,

@@ -16,6 +16,8 @@ public class UpdateProjectDto
     /// </summary>
     public int? SortOrder { get; set; }
 
+    public ProjectDifficultyLevel DifficultyLevel { get; set; }
+
     [Required]
     public string Summary { get; set; }
     [Required]
@@ -56,6 +58,7 @@ public class UpdateProjectDto
         {
             Title = projectDto.Title,
             SortOrder=projectDto.SortOrder,
+            DifficultyLevel=projectDto.DifficultyLevel,
             StartDate=projectDto.StartDate,
             EndDate=projectDto.EndDate,
             Summary = projectDto.Summary,

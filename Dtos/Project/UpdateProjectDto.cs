@@ -14,8 +14,11 @@ public class UpdateProjectDto
     /// Determines the custom display order of projects in the UI.
     /// Lower values appear first.
     /// </summary>
-    public int? SortOrder { get; set; }
 
+    [Required]
+    public int SortOrder { get; set; }
+
+    [Required]
     public ProjectDifficultyLevel DifficultyLevel { get; set; }
 
     [Required]

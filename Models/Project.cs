@@ -1,4 +1,6 @@
-﻿namespace Frontfolio.API.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Frontfolio.API.Models
 {
     public class Project
     {
@@ -10,7 +12,7 @@
         /// Determines the custom display order of projects in the UI.
         /// Lower values appear first.
         /// </summary>
-        public int? SortOrder { get; set; }
+        public int SortOrder { get; set; } = 1;
 
         public ProjectDifficultyLevel DifficultyLevel { get; set; } = ProjectDifficultyLevel.Beginner;
 

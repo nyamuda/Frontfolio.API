@@ -50,7 +50,7 @@ public class ProjectService
             ProjectSortOption.StartDate => query.OrderByDescending(p => p.StartDate),
             ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
             ProjectSortOption.DifficultyLevel => query.OrderByDescending(p =>p.DifficultyLevel),
-            _ => query.OrderByDescending(p => p.CreatedAt)
+            _ => query.OrderByDescending(p => p.CreatedAt) 
         };
 
         List<ProjectDto> projects = await query           
@@ -113,26 +113,31 @@ public class ProjectService
     public async Task UpdateProject(int userId,int projectId,UpdateProjectDto updateProjectDto)
     {
         //check if user with the given ID exist
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
-        if (user is null) throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId))
+            ?? throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
 
+        //get the project
+        Project project = await _context.Projects.FirstOrDefaultAsync(p =>p.Id.Equals(projectId)) 
+            ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
+        //update the project
+        project.Status=updateProjectDto.Status;
+        project.Title=updateProjectDto.Title;
+        project.SortOrder=updateProjectDto.SortOrder;
+        project.DifficultyLevel=updateProjectDto.DifficultyLevel;
+        project.StartDate= TimeZoneInfo.ConvertTimeToUtc(updateProjectDto.StartDate); ;
+        project.EndDate= TimeZoneInfo.ConvertTimeToUtc(updateProjectDto.EndDate);
+        project.Summary=updateProjectDto.Summary;
+        project.GitHubUrl = updateProjectDto.GitHubUrl;
+        project.ImageUrl=updateProjectDto.ImageUrl;
+        project.LiveUrl=updateProjectDto.LiveUrl;
+        project.VideoUrl=updateProjectDto.VideoUrl; 
+        project.TechStack=updateProjectDto.TechStack;
+        project.Background=updateProjectDto.Background;
+        project.Challenges=updateProjectDto.Challenges;
+        project.Achievements=updateProjectDto.Achievements;
+        project.Feedback=updateProjectDto.Feedback;
+        project.UpdatedAt= DateTime.UtcNow;
 
-        //Map UpdateProjectDto to Project
-        Project updatedProject = UpdateProjectDto.MapTo(updateProjectDto);
-        
-        //add the userId, projectId fields
-        updatedProject.Id = projectId;
-        updatedProject.UserId = userId;
-
-        //convert start and end dates to UTC time
-        updatedProject.StartDate = TimeZoneInfo.ConvertTimeToUtc(updatedProject.StartDate);
-        updatedProject.EndDate = TimeZoneInfo.ConvertTimeToUtc(updatedProject.EndDate);
-
-        //update the updatedAt field
-        updatedProject.UpdatedAt = DateTime.UtcNow;
-
-        //update project
-        _context.Projects.Update(updatedProject);
         await _context.SaveChangesAsync();
         
     }

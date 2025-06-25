@@ -10,9 +10,9 @@
         /// Determines the custom display order of projects in the UI.
         /// Lower values appear first.
         /// </summary>
-        public int? SortOrder { get; set; } 
+        public int? SortOrder { get; set; }
 
-        public 
+        public ProjectDifficultyLevel DifficultyLevel { get; set; } = ProjectDifficultyLevel.Beginner;
 
         public DateTime StartDate { get; set; } = DateTime.UtcNow;
 

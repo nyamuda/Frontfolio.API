@@ -10,10 +10,16 @@ using Microsoft.EntityFrameworkCore;
 
 
     public DbSet<User> Users { get; set; } = default!;
-
     public DbSet<UserOtp> UserOtps { get; set; } = default!;
-
     public DbSet<Project> Projects { get; set; } = default!;
+    public DbSet<Paragraph> Paragraphs { get; set; } = default!;
+    public DbSet<Challenge> Challenges { get; set; } = default!;
+    public DbSet<Achievement> Achievements { get; set; } = default!;
+    public DbSet<Feedback> Feedback { get; set; } = default!;
+
+
+
+
 
 
 

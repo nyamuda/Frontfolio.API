@@ -118,30 +118,7 @@ public class ProjectService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId))
             ?? throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
 
-        //get the project
-        Project project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
-            ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
         //update the project
-        project.Status = updateProjectDto.Status;
-        project.Title = updateProjectDto.Title;
-        project.SortOrder = updateProjectDto.SortOrder;
-        project.DifficultyLevel = updateProjectDto.DifficultyLevel;
-        project.StartDate = TimeZoneInfo.ConvertTimeToUtc(updateProjectDto.StartDate); ;
-        project.EndDate = TimeZoneInfo.ConvertTimeToUtc(updateProjectDto.EndDate);
-        project.Summary = updateProjectDto.Summary;
-        project.GitHubUrl = updateProjectDto.GitHubUrl;
-        project.ImageUrl = updateProjectDto.ImageUrl;
-        project.LiveUrl = updateProjectDto.LiveUrl;
-        project.VideoUrl = updateProjectDto.VideoUrl;
-        project.TechStack = updateProjectDto.TechStack;
-        project.Background = updateProjectDto.Background.Select(p => UpdateParagraphDto.MapTo(p)).ToList();
-        project.Challenges = updateProjectDto.Challenges;
-        project.Achievements = updateProjectDto.Achievements;
-        project.Feedback = updateProjectDto.Feedback;
-        project.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
         await _context.Projects
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.Title, p => updateProjectDto.Title)
             .SetProperty(p => p.Status, p => updateProjectDto.Status)
@@ -157,6 +134,9 @@ public class ProjectService
             .SetProperty(p => p.TechStack, p => updateProjectDto.TechStack)
             .SetProperty(p => p.UpdatedAt, p => DateTime.UtcNow)
               );
+
+    //update the related entities e.g Paragraph, Challenge, Achievement etc
+    await _context.Para
 
     }
 

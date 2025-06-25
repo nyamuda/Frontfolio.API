@@ -250,7 +250,7 @@ public class ProjectsController : ControllerBase
                     return Forbid("You don't have permission to update this project.");
 
                 //delete project
-                await _projectService.DeletedProject(projectId: id);
+                await _projectService.DeleteProject(id);
 
                 return NoContent();
             }

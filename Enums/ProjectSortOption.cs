@@ -2,6 +2,7 @@
 {
     StartDate,
     EndDate,
-    SortOrder
+    SortOrder,
+    DifficultyLevel
 
 }

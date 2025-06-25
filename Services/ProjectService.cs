@@ -46,7 +46,7 @@ public class ProjectService
         //sort the projects by the sortOption
         query = sortOption switch
         {
-            ProjectSortOption.SortOrder => query.OrderByDescending(p => p.OrderLevel),
+            ProjectSortOption.SortOrder => query.OrderByDescending(p => p.SortOrder),
             ProjectSortOption.StartDate => query.OrderByDescending(p => p.StartDate),
             ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
             _ => query.OrderByDescending(p => p.CreatedAt)

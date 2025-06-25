@@ -49,6 +49,7 @@ public class ProjectService
             ProjectSortOption.SortOrder => query.OrderByDescending(p => p.SortOrder),
             ProjectSortOption.StartDate => query.OrderByDescending(p => p.StartDate),
             ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
+            ProjectSortOption.DifficultyLevel => query.OrderByDescending(p =>p.DifficultyLevel),
             _ => query.OrderByDescending(p => p.CreatedAt)
         };
 
@@ -59,6 +60,8 @@ public class ProjectService
              {
                  Id = p.Id,
                  Title = p.Title,
+                 SortOrder=p.SortOrder,
+                 DifficultyLevel=p.DifficultyLevel,
                  StartDate=p.StartDate,
                  EndDate=p.EndDate,
                  Summary = p.Summary,

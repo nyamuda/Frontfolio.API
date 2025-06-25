@@ -22,7 +22,7 @@ public class ProjectService
             .FirstOrDefaultAsync(p => p.Id.Equals(id));
 
 
-        if (project is null) throw new KeyNotFoundException($"Project with ID {id} doest not exist");
+        if (project is null) throw new KeyNotFoundException($@"Project with ID ""{id}"" doest not exist");
 
         return ProjectDto.MapFrom(project);
     }
@@ -132,6 +132,16 @@ public class ProjectService
         _context.Projects.Update(updatedProject);
         await _context.SaveChangesAsync();
         
+    }
+
+    //Delete a project
+    public async Task DeleteProject(int id)
+    {
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(id)) 
+            ?? throw new KeyNotFoundException($@"Project with ID ""{id}"" does not exist.");
+
+        _context.Projects.Remove(project);
+        await _context.SaveChangesAsync();
     }
 
 

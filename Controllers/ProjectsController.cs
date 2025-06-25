@@ -195,7 +195,7 @@ public class ProjectsController : ControllerBase
                     return Forbid("You don't have permission to update this project.");
 
                 //update project
-                await _projectService.UpdateProject(userId: oldProject.UserId, projectId: id, updateProjectDto);
+                await _projectService.UpdateProject(userId: userId, projectId: id, updateProjectDto);
 
                 return NoContent();
             }

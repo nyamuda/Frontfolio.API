@@ -10,6 +10,12 @@ public class UpdateProjectDto
     [Required]
     public string Title { get; set; }
 
+    /// <summary>
+    /// Determines the custom display order of projects in the UI.
+    /// Lower values appear first.
+    /// </summary>
+    public int? SortOrder { get; set; }
+
     [Required]
     public string Summary { get; set; }
     [Required]
@@ -49,6 +55,7 @@ public class UpdateProjectDto
         return new Project
         {
             Title = projectDto.Title,
+            SortOrder=projectDto.SortOrder,
             StartDate=projectDto.StartDate,
             EndDate=projectDto.EndDate,
             Summary = projectDto.Summary,

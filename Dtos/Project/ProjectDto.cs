@@ -8,6 +8,12 @@ public class ProjectDto
  
     public required string Title { get; set; }
 
+    /// <summary>
+    /// Determines the custom display order of projects in the UI.
+    /// Lower values appear first.
+    /// </summary>
+    public int? SortOrder { get; set; }
+
     public DateTime? StartDate { get; set; }
 
     public DateTime? EndDate { get; set; }
@@ -49,6 +55,7 @@ public class ProjectDto
         {
             Id = project.Id,
             Title = project.Title,
+            SortOrder=project.SortOrder,
             StartDate=project.StartDate,
             EndDate=project.EndDate,
             Summary = project.Summary,
@@ -75,6 +82,7 @@ public class ProjectDto
         return new Project
         {
             Title = projectDto.Title,
+            SortOrder=projectDto.SortOrder,
             Summary = projectDto.Summary,
             TechStack = projectDto.TechStack,
             GitHubUrl = projectDto.GitHubUrl,

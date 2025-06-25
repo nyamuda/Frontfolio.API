@@ -136,10 +136,16 @@ public class ProjectsController : ControllerBase
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
                 throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
 
-            //Add the new project
-            var project = await _projectService.AddProject(userId: int.Parse(tokenUserId), addProjectDto);
+           if(int.TryParse(tokenUserId,out int userId))
+            {
+                //Add the new project
+                var project = await _projectService.AddProject(userId, addProjectDto);
 
-            return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
+                return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
+            }
+
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
 
         }
         catch (KeyNotFoundException ex)
@@ -182,14 +188,75 @@ public class ProjectsController : ControllerBase
             // Compare the User ID from the token with the User ID of the project to be updated
             // A user is only allowed to update their own projects.
             // If the user ID from the token does not match the project owner's ID, deny access.
-            var oldProject = await _projectService.GetProjectById(id);
-            if (!oldProject.UserId.Equals(int.Parse(tokenUserId)))
-                return Forbid("You don't have permission to update this project.");
+           if(int.TryParse(tokenUserId,out int userId))
+            {
+                var oldProject = await _projectService.GetProjectById(id);
+                if (!oldProject.UserId.Equals(userId))
+                    return Forbid("You don't have permission to update this project.");
 
-            //update project
-            await _projectService.UpdateProject(userId: oldProject.UserId, projectId: id, updateProjectDto);
+                //update project
+                await _projectService.UpdateProject(userId: oldProject.UserId, projectId: id, updateProjectDto);
 
-            return NoContent();
+                return NoContent();
+            }
+
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
+    }
+
+    //Delete a project
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            //First, extract the user's access token from the Authorization header
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            //Manually validate the token and then grab the User ID from the token claims
+            ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+
+            // Compare the User ID from the token with the User ID of the project to be deleted
+            // A user is only allowed to delete their own projects.
+            // If the user ID from the token does not match the project owner's ID, deny access.
+            if (int.TryParse(tokenUserId, out int userId))
+            {
+                var oldProject = await _projectService.GetProjectById(id);
+                if (!oldProject.UserId.Equals(userId))
+                    return Forbid("You don't have permission to update this project.");
+
+                //delete project
+                await _projectService.DeletedProject(projectId: id);
+
+                return NoContent();
+            }
+
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
 
         }
         catch (KeyNotFoundException ex)

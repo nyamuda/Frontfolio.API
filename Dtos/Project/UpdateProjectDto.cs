@@ -45,7 +45,7 @@ public class UpdateProjectDto
     public ProjectStatus Status { get; set; }
 
 
-    public List<Paragraph> Background { get; set; } = [];
+    public List<UpdateParagraphDto> Background { get; set; } = [];
 
     public List<Challenge> Challenges { get; set; } = [];
 
@@ -55,30 +55,6 @@ public class UpdateProjectDto
 
 
 
-    //Map AddProjectDto to Project
-    public static Project MapTo(UpdateProjectDto projectDto)
-    {
-        return new Project
-        {
-            Title = projectDto.Title,
-            SortOrder=projectDto.SortOrder,
-            DifficultyLevel=projectDto.DifficultyLevel,
-            StartDate=projectDto.StartDate,
-            EndDate=projectDto.EndDate,
-            Summary = projectDto.Summary,
-            TechStack = projectDto.TechStack,
-            GitHubUrl = projectDto.GitHubUrl,
-            ImageUrl = projectDto.ImageUrl,
-            VideoUrl=projectDto.VideoUrl,                   
-            LiveUrl = projectDto.LiveUrl,
-            Status = projectDto.Status,
-            Background = projectDto.Background,
-            Challenges = projectDto.Challenges,
-            Achievements = projectDto.Achievements,
-            Feedback = projectDto.Feedback,
-
-        };
-
-    }
+    
 }
 

@@ -118,25 +118,29 @@ public class ProjectService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId))
             ?? throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
 
+
+       
         //update the project
+       Project project= UpdateProjectDto.MapTo(updateProjectDto);
         await _context.Projects
-            .ExecuteUpdateAsync(s => s.SetProperty(p => p.Title, p => updateProjectDto.Title)
-            .SetProperty(p => p.Status, p => updateProjectDto.Status)
-            .SetProperty(p => p.SortOrder, p => updateProjectDto.SortOrder)
-            .SetProperty(p => p.DifficultyLevel, p => updateProjectDto.DifficultyLevel)
-            .SetProperty(p => p.StartDate, p => updateProjectDto.StartDate)
-            .SetProperty(p => p.EndDate, p => updateProjectDto.EndDate)
-            .SetProperty(p => p.Summary, p => updateProjectDto.Summary)
-            .SetProperty(p => p.GitHubUrl, p => updateProjectDto.GitHubUrl)
-            .SetProperty(p => p.ImageUrl, p => updateProjectDto.ImageUrl)
-            .SetProperty(p => p.VideoUrl, p => updateProjectDto.VideoUrl)
-            .SetProperty(p => p.LiveUrl, p => updateProjectDto.LiveUrl)
-            .SetProperty(p => p.TechStack, p => updateProjectDto.TechStack)
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.Title, p => project.Title)
+            .SetProperty(p => p.Status, p => project.Status)
+            .SetProperty(p => p.SortOrder, p => project.SortOrder)
+            .SetProperty(p => p.DifficultyLevel, p => project.DifficultyLevel)
+            .SetProperty(p => p.StartDate, p => project.StartDate)
+            .SetProperty(p => p.EndDate, p => project.EndDate)
+            .SetProperty(p => p.Summary, p => project.Summary)
+            .SetProperty(p => p.GitHubUrl, p => project.GitHubUrl)
+            .SetProperty(p => p.ImageUrl, p => project.ImageUrl)
+            .SetProperty(p => p.VideoUrl, p => project.VideoUrl)
+            .SetProperty(p => p.LiveUrl, p => project.LiveUrl)
+            .SetProperty(p => p.TechStack, p => project.TechStack)
             .SetProperty(p => p.UpdatedAt, p => DateTime.UtcNow)
               );
 
-    //update the related entities e.g Paragraph, Challenge, Achievement etc
-    await _context.Para
+        //update the related entities e.g Paragraph, Challenge, Achievement etc
+        await _context.Paragraphs.AddRangeAsync(project.Background);
+       
 
     }
 

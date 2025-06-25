@@ -39,12 +39,20 @@ public class ProjectService
     /// A tuple containing:
     /// - A <see cref="PageInfo"/> object with pagination metadata and a list of the projects.
     /// </returns>
-    public async Task<PageInfo<ProjectDto>> GetProjects(int page, int pageSize, int userId)
+    public async Task<PageInfo<ProjectDto>> GetProjects(int page, int pageSize, int userId, ProjectSortOption? sortOption)
     {
+        var query = _context.Projects.Where(p => p.UserId.Equals(userId)).AsQueryable();
 
-        List<ProjectDto> projects = await _context.Projects
-             .Where(p => p.UserId.Equals(userId))
-             .OrderByDescending(p => p.CreatedAt)
+        //sort the projects by the sortOption
+        query = sortOption switch
+        {
+            ProjectSortOption.SortOrder => query.OrderByDescending(p => p.OrderLevel),
+            ProjectSortOption.StartDate => query.OrderByDescending(p => p.StartDate),
+            ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
+            _ => query.OrderByDescending(p => p.CreatedAt)
+        };
+
+        List<ProjectDto> projects = await query           
              .Skip((page - 1) * pageSize)
              .Take(pageSize)       
              .Select(p => new ProjectDto

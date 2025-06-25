@@ -6,8 +6,11 @@
 
         public required string Title { get; set; }
 
-
-        public int OrderLevel { get; set; } 
+        /// <summary>
+        /// Determines the custom display order of projects in the UI.
+        /// Lower values appear first.
+        /// </summary>
+        public int? SortOrder { get; set; } 
 
         public DateTime StartDate { get; set; } = DateTime.UtcNow;
 

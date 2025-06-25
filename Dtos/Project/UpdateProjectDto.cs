@@ -3,10 +3,11 @@ using Frontfolio.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 public class UpdateProjectDto
 {
-
+    
     [Required]
     public string Title { get; set; }
 

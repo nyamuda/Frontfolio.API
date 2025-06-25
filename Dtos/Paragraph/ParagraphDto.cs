@@ -1,0 +1,15 @@
+﻿using Frontfolio.API.Models;
+
+public class ParagraphDto
+{
+    public int Id { get; set; }
+    public required string Title { get; set; }
+    public required string Content { get; set; }
+    public string ImageUrl { get; set; } = default!;
+    public string ImageCaption { get; set; } = default!;
+    public required ParagraphType ParagraphType { get; set; }
+    public int ProjectId { get; set; }
+    public Project? Project { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}

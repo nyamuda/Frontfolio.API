@@ -219,7 +219,7 @@ public class ProjectsController : ControllerBase
             var response = new
             {
                 message = ErrorMessageHelper.UnexpectedErrorMessage(),
-                details = ex.Message
+                details = ex.ToString()
             };
 
             return StatusCode(500, response);

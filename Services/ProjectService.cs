@@ -118,29 +118,39 @@ public class ProjectService
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId))
             ?? throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
 
+        //map UpdateProjectDto to Project
+        Project project = UpdateProjectDto.MapTo(updateProjectDto);
 
-       
-        //update the project
-       Project project= UpdateProjectDto.MapTo(updateProjectDto);
-        await _context.Projects
-            .ExecuteUpdateAsync(s => s.SetProperty(p => p.Title, p => project.Title)
-            .SetProperty(p => p.Status, p => project.Status)
-            .SetProperty(p => p.SortOrder, p => project.SortOrder)
-            .SetProperty(p => p.DifficultyLevel, p => project.DifficultyLevel)
-            .SetProperty(p => p.StartDate, p => project.StartDate)
-            .SetProperty(p => p.EndDate, p => project.EndDate)
-            .SetProperty(p => p.Summary, p => project.Summary)
-            .SetProperty(p => p.GitHubUrl, p => project.GitHubUrl)
-            .SetProperty(p => p.ImageUrl, p => project.ImageUrl)
-            .SetProperty(p => p.VideoUrl, p => project.VideoUrl)
-            .SetProperty(p => p.LiveUrl, p => project.LiveUrl)
-            .SetProperty(p => p.TechStack, p => project.TechStack)
-            .SetProperty(p => p.UpdatedAt, p => DateTime.UtcNow)
-              );
+        //get the project
+        Project existingProject = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
+            ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
 
-        //update the related entities e.g Paragraph, Challenge, Achievement etc
-        await _context.Paragraphs.AddRangeAsync(project.Background);
-       
+        // Update all properties
+        existingProject.Title = project.Title;
+        existingProject.Status = project.Status;
+        existingProject.SortOrder = project.SortOrder;
+        existingProject.DifficultyLevel = project.DifficultyLevel;
+        existingProject.StartDate = TimeZoneInfo.ConvertTimeToUtc(project.StartDate);
+        existingProject.EndDate = TimeZoneInfo.ConvertTimeToUtc(project.EndDate);
+        existingProject.Summary = project.Summary;
+        existingProject.GitHubUrl = project.GitHubUrl;
+        existingProject.ImageUrl = project.ImageUrl;
+        existingProject.VideoUrl = project.VideoUrl;
+        existingProject.LiveUrl = project.LiveUrl;
+        existingProject.TechStack = project.TechStack;
+        existingProject.Background = project.Background;
+        existingProject.UpdatedAt = DateTime.UtcNow;
+
+        // Check if the existing project has background paragraphs
+        // and the updated project has removed all of them.
+        // If so, delete all the existing background paragraphs from the database.
+        if (existingProject.Background.Count > 0 && project.Background.Count == 0)
+        {
+            _context.Paragraphs.RemoveRange(existingProject.Background);
+        }
+
+        await _context.SaveChangesAsync();
+
 
     }
 

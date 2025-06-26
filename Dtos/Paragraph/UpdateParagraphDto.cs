@@ -8,9 +8,9 @@ public class UpdateParagraphDto
     [Required]
     public required string Content { get; set; }
     [Url]
-    public string ImageUrl { get; set; } = default!;
+    public string? ImageUrl { get; set; } = default!;
 
-    public string ImageCaption { get; set; } = default!;
+    public string? ImageCaption { get; set; } = default!;
     [Required]
     public required ParagraphType ParagraphType { get; set; }
     [Required]

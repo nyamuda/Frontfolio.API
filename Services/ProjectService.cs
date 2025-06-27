@@ -182,7 +182,7 @@ public class ProjectService
         };
         await _context.Paragraphs.AddAsync(paragraph);
 
-        return ParagraphDto.M
+        return ParagraphDto.MapFrom(paragraph);
 
     }
 

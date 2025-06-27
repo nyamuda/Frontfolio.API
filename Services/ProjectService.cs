@@ -203,6 +203,26 @@ public class ProjectService
            }).ToListAsync();
     }
 
+    //Update background paragraph for a project with a given ID
+    public async Task UpdateProjectBackground(int projectId,int backgroundId, UpdateParagraphDto paragraphDto)
+    {
+        //check if project with the given ID exists
+        var project = _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
+           ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+        //Check if background paragraph with the given ID and ProjectID exists
+        var background = await _context.Paragraphs
+            .FirstOrDefaultAsync(p => p.Id.Equals(backgroundId) && p.ProjectId.Equals(projectId))
+            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectID ""{projectId}"" does not exist.");
+
+        background.Title =paragraphDto.Title;
+        background.Content=paragraphDto.Content;
+        background.ImageUrl =paragraphDto.ImageUrl;
+        background.ImageCaption =paragraphDto.ImageCaption;
+        background.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+    }
+
 
 
 

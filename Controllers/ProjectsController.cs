@@ -12,11 +12,14 @@ public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;
     private readonly JwtService _jwtService;
+    private readonly ParagraphService _paragraphService;
 
-    public ProjectsController(ProjectService projectService, JwtService jwtService)
+    public ProjectsController(ProjectService projectService, JwtService jwtService,ParagraphService paragraphService)
     {
         _projectService = projectService;
         _jwtService = jwtService;
+        _paragraphService = paragraphService;
+
     }
 
 
@@ -280,4 +283,48 @@ public class ProjectsController : ControllerBase
             return StatusCode(500, response);
         }
     }
+    //Add a background paragraph for a project with a given ID
+    [HttpPost("{projectId}/backgrounds")]
+    public async Task<IActionResult> AddParagraph(int projectId,AddParagraphDto paragraphDto)
+    {
+        try
+        {
+            //Retrieve the access token from the request
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            //Manually validate the token
+            ClaimsPrincipal claims =_jwtService.ValidateJwtToken(token);
+            //Get the user ID claim from the token
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+
+            if(int.TryParse(tokenUserId, out int userId))
+            {
+                ParagraphDto paragraph = await _paragraphService.AddProjectBackgroundParagraph(projectId, paragraphDto);
+            }
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
+    }
+    
 }

@@ -8,7 +8,7 @@
         public string? ImageUrl { get; set; } = default!;
         public string? ImageCaption { get; set; } = default!;
         public required ParagraphType ParagraphType { get; set; }
-        public int ProjectId { get; set; }  
+        public int? ProjectId { get; set; }  
         public Project? Project { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

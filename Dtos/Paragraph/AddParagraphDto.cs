@@ -13,6 +13,4 @@ public class AddParagraphDto
     public string? ImageCaption { get; set; } = default!;
     
 
-
-
 }

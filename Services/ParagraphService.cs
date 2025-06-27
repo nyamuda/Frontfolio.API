@@ -17,10 +17,17 @@ public class ParagraphService
     }
 
     //Add a background paragraph for a project with a given ID
-    public async Task<ParagraphDto> AddProjectBackgroundParagraph(int projectId, AddParagraphDto paragraphDto)
+    public async Task<ParagraphDto> AddProjectBackgroundParagraph(int projectId,int tokenUserId, AddParagraphDto paragraphDto)
     {
-        var project = _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
             ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+
+        // Compare the token User ID with the User ID of the project the background paragraph is about to be added to
+        // A user is only allowed to add background paragraphs to their own projects.
+        // If the user ID from the token does not match the project owner's ID, deny access.
+        if (!project.UserId.Equals(tokenUserId))
+            throw new UnauthorizedAccessException("You don't have permission to add the background to this project.");
 
         Paragraph paragraph = new()
         {

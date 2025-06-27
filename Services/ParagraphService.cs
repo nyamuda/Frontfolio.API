@@ -124,7 +124,7 @@ public class ParagraphService
     /// This method ensures that only the owner of the project can delete its background paragraph. 
     /// It validates the existence of both the project and paragraph before deletion.
     /// </remarks>
-    public async Task DeleteBackgroundParagraphForProject(int projectId, int backgroundId, int tokenUserId)
+    public async Task DeleteProjectBackgroundParagraph(int projectId, int backgroundId, int tokenUserId)
     {
         //check if project with the given ID exists
         var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))

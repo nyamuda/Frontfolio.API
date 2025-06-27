@@ -166,7 +166,7 @@ public class ProjectService
 
 
     //Add a background paragraph for a project with a given ID
-    public async Task<ParagraphDto> AddProjectBackground(int projectId,AddParagraphDto paragraphDto)
+    public async Task<ParagraphDto> AddProjectBackground(int projectId, AddParagraphDto paragraphDto)
     {
         var project = _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
             ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
@@ -175,8 +175,8 @@ public class ProjectService
         {
             Title = paragraphDto.Title,
             Content = paragraphDto.Content,
-            ImageUrl=paragraphDto.ImageUrl,
-            ImageCaption=paragraphDto.ImageCaption, 
+            ImageUrl = paragraphDto.ImageUrl,
+            ImageCaption = paragraphDto.ImageCaption,
             ParagraphType = ParagraphType.ProjectBackground,
             ProjectId = projectId,
         };
@@ -184,6 +184,23 @@ public class ProjectService
 
         return ParagraphDto.MapFrom(paragraph);
 
+    }
+
+    //Get all background paragraphs for a project with a given ID
+    public async Task<List<ParagraphDto>> GetProjectBackgrounds(int projectId)
+    {
+        return await _context.Paragraphs
+           .Where(p => p.ProjectId.Equals(projectId))
+           .OrderByDescending(p => p.CreatedAt)
+           .Select(p => new ParagraphDto
+           {
+               Title = p.Title,
+               Content = p.Content,
+               ImageUrl = p.ImageUrl,
+               ImageCaption = p.ImageCaption,
+               ParagraphType = p.ParagraphType,
+               ProjectId = p.ProjectId
+           }).ToListAsync();
     }
 
 

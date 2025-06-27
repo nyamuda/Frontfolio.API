@@ -166,7 +166,25 @@ public class ProjectService
 
 
     //Add a background paragraph for a project with a given ID
-    public async Task<Paragraph> AddProjectParagraph(int projectId,)
+    public async Task<ParagraphDto> AddProjectBackground(int projectId,AddParagraphDto paragraphDto)
+    {
+        var project = _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
+            ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+        Paragraph paragraph = new()
+        {
+            Title = paragraphDto.Title,
+            Content = paragraphDto.Content,
+            ImageUrl=paragraphDto.ImageUrl,
+            ImageCaption=paragraphDto.ImageCaption, 
+            ParagraphType = ParagraphType.ProjectBackground,
+            ProjectId = projectId,
+        };
+        await _context.Paragraphs.AddAsync(paragraph);
+
+        return ParagraphDto.M
+
+    }
 
 
 

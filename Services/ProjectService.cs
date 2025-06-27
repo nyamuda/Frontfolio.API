@@ -165,6 +165,10 @@ public class ProjectService
     }
 
 
+    //Add a background paragraph for a project with a given ID
+    public async Task<Paragraph> AddProjectParagraph(int projectId,)
+
+
 
 
 }

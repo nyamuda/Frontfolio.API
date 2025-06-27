@@ -247,7 +247,7 @@ public class ProjectsController : ControllerBase
             {
                 var oldProject = await _projectService.GetProjectById(id);
                 if (!oldProject.UserId.Equals(userId))
-                    return Forbid("You don't have permission to update this project.");
+                    return Forbid("You don't have permission to delete this project.");
 
                 //delete project
                 await _projectService.DeleteProject(id);

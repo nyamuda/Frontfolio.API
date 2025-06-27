@@ -45,10 +45,14 @@ public class ParagraphService
     }
 
     //Get all the background paragraphs for a project with a given ID
-    public async Task<List<ParagraphDto>> GetProjectBackgroundParagraphs(int projectId)
+    public async Task<List<ParagraphDto>> GetProjectBackgroundParagraphs(int projectId,int userId)
     {
+        //check if a project with the given ID and User ID exists
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId) && p.UserId.Equals(userId)) ??
+            throw new KeyNotFoundException($@"Project with ID ""{projectId}"" and UserId ""{userId}"" does not exist.");
+            
         return await _context.Paragraphs
-           .Where(p => p.ProjectId.Equals(projectId))
+           .Where(p => p.ProjectId.Equals(project.Id))
            .OrderByDescending(p => p.CreatedAt)
            .Select(p => new ParagraphDto
            {
@@ -87,7 +91,7 @@ public class ParagraphService
         //Check if background paragraph with the given ID and ProjectID exists
         var background = await _context.Paragraphs
             .FirstOrDefaultAsync(p => p.Id.Equals(backgroundId) && p.ProjectId.Equals(projectId))
-            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectID ""{projectId}"" does not exist.");
+            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectId ""{projectId}"" does not exist.");
 
         // Compare the token User ID with the User ID of the project whose background paragraph is about to be updated
         // A user is only allowed to update their own projects.
@@ -129,7 +133,7 @@ public class ParagraphService
         //Check if background paragraph with the given ID and ProjectID exists
         var background = await _context.Paragraphs
             .FirstOrDefaultAsync(p => p.Id.Equals(backgroundId) && p.ProjectId.Equals(projectId))
-            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectID ""{projectId}"" does not exist.");
+            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectId ""{projectId}"" does not exist.");
 
         // Compare the token User ID with the User ID of the project whose background paragraph is about to be updated
         // A user is only allowed to update their own projects.

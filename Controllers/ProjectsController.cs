@@ -299,7 +299,8 @@ public class ProjectsController : ControllerBase
 
             if(int.TryParse(tokenUserId, out int userId))
             {
-                ParagraphDto paragraph = await _paragraphService.AddProjectBackgroundParagraph(projectId, paragraphDto);
+                ParagraphDto paragraph = await _paragraphService
+                    .AddProjectBackgroundParagraph(projectId,userId, paragraphDto);
             }
             //throw an exception if tokenUserId cannot be parsed
             throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");

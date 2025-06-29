@@ -9,9 +9,9 @@ public class ParagraphDto
     public string? ImageCaption { get; set; } = default!;
     public required ParagraphType ParagraphType { get; set; }
     public int? ProjectId { get; set; }
-    public Project? Project { get; set; }
-
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime UpdatedAt { get; set;} = DateTime.UtcNow;   
 
 
     public static ParagraphDto MapFrom(Paragraph paragraph)
@@ -25,6 +25,8 @@ public class ParagraphDto
             ImageCaption = paragraph.ImageCaption,
             ParagraphType = paragraph.ParagraphType,
             ProjectId = paragraph.ProjectId,
+            CreatedAt=paragraph.CreatedAt,
+            UpdatedAt=paragraph.UpdatedAt,
         };
 
 

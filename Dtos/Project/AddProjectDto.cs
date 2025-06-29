@@ -43,7 +43,7 @@ public class AddProjectDto
     public ProjectStatus Status { get; set; }
 
 
-    public List<Paragraph> Background { get; set; } = [];
+    public List<AddParagraphDto> Background { get; set; } = [];
 
     public List<Challenge> Challenges { get; set; } = [];
 
@@ -70,7 +70,13 @@ public class AddProjectDto
             VideoUrl=projectDto.VideoUrl,
             LiveUrl = projectDto.LiveUrl,
             Status = projectDto.Status,
-            Background = projectDto.Background,
+            Background = projectDto.Background.Select(p => new Paragraph {
+            Title=p.Title,
+            Content=p.Content,
+            ParagraphType=ParagraphType.ProjectBackground,
+            ImageUrl=p.ImageUrl,
+            ImageCaption=p.ImageCaption,    
+            }).ToList(),
             Challenges = projectDto.Challenges,
             Achievements = projectDto.Achievements,
             Feedback = projectDto.Feedback,

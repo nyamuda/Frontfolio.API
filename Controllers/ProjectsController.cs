@@ -285,8 +285,8 @@ public class ProjectsController : ControllerBase
     }
    
     //Delete background paragraph for a specific project
-    [HttpDelete("{id}/backgrounds/{backgroundId}")]
-    public async Task<IActionResult> UpdateBackgroundParagraph(int id,int backgroundId,UpdateParagraphDto paragraphDto)
+    [HttpDelete("{projectId}/backgrounds/{paragraphId}")]
+    public async Task<IActionResult> UpdateBackgroundParagraph(int projectId,int paragraphId)
     {
         try
         {
@@ -301,8 +301,7 @@ public class ProjectsController : ControllerBase
             if (int.TryParse(tokenUserId, out int userId))
             {
                 await _paragraphService
-                    .DeleteProjectBackgroundParagraph(projectId:id, backgroundId, userId);
-
+                    .DeleteProjectBackgroundParagraph(projectId, paragraphId, userId);
                 return NoContent();
             }
             //throw an exception if tokenUserId cannot be parsed

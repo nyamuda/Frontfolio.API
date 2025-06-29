@@ -12,7 +12,7 @@ public class ParagraphService
     public ParagraphService(ApplicationDbContext context)
     {
         _context = context;
-        _context = context;
+       
 
     }
 
@@ -69,7 +69,7 @@ public class ParagraphService
     /// Updates a background paragraph for a specific project.
     /// </summary>
     /// <param name="projectId">The ID of the project to which the background paragraph belongs.</param>
-    /// <param name="backgroundId">The ID of the background paragraph to update.</param>
+    /// <param name="paragraphId">The ID of the background paragraph to update.</param>
     /// <param name="tokenUserId">The ID of the user making the request, extracted from the JWT token.</param>
     /// <param name="paragraphDto">The updated paragraph data.</param>
     /// <exception cref="KeyNotFoundException">
@@ -82,7 +82,7 @@ public class ParagraphService
     /// This method ensures that only the owner of the project can update its background paragraph. 
     /// It validates the existence of both the project and paragraph before applying the changes.
     /// </remarks>
-    public async Task UpdateProjectBackgroundParagraph(int projectId, int backgroundId, int tokenUserId, UpdateParagraphDto paragraphDto)
+    public async Task UpdateProjectBackgroundParagraph(int projectId, int paragraphId, int tokenUserId, UpdateParagraphDto paragraphDto)
     {
         //check if project with the given ID exists
         var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
@@ -90,8 +90,8 @@ public class ParagraphService
 
         //Check if background paragraph with the given ID and ProjectID exists
         var background = await _context.Paragraphs
-            .FirstOrDefaultAsync(p => p.Id.Equals(backgroundId) && p.ProjectId.Equals(projectId))
-            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectId ""{projectId}"" does not exist.");
+            .FirstOrDefaultAsync(p => p.Id.Equals(paragraphId) && p.ProjectId.Equals(projectId))
+            ?? throw new KeyNotFoundException($@"Project background paragraph with ID ""{paragraphId}"" and ProjectId ""{projectId}"" does not exist.");
 
         // Compare the token User ID with the User ID of the project whose background paragraph is about to be updated
         // A user is only allowed to update their own projects.
@@ -112,7 +112,7 @@ public class ParagraphService
     /// Deletes a background paragraph for a specific project.
     /// </summary>
     /// <param name="projectId">The ID of the project to which the background paragraph belongs.</param>
-    /// <param name="backgroundId">The ID of the background paragraph to delete.</param>
+    /// <param name="paragraphId">The ID of the background paragraph to delete.</param>
     /// <param name="tokenUserId">The ID of the user making the request, extracted from the JWT token.</param>
     /// <exception cref="KeyNotFoundException">
     /// Thrown when the project or the specified background paragraph cannot be found.
@@ -124,7 +124,7 @@ public class ParagraphService
     /// This method ensures that only the owner of the project can delete its background paragraph. 
     /// It validates the existence of both the project and paragraph before deletion.
     /// </remarks>
-    public async Task DeleteProjectBackgroundParagraph(int projectId, int backgroundId, int tokenUserId)
+    public async Task DeleteProjectBackgroundParagraph(int projectId, int paragraphId, int tokenUserId)
     {
         //check if project with the given ID exists
         var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
@@ -132,8 +132,8 @@ public class ParagraphService
 
         //Check if background paragraph with the given ID and ProjectID exists
         var background = await _context.Paragraphs
-            .FirstOrDefaultAsync(p => p.Id.Equals(backgroundId) && p.ProjectId.Equals(projectId))
-            ?? throw new KeyNotFoundException($@"Project background with ID ""{backgroundId}"" and ProjectId ""{projectId}"" does not exist.");
+            .FirstOrDefaultAsync(p => p.Id.Equals(paragraphId) && p.ProjectId.Equals(projectId))
+            ?? throw new KeyNotFoundException($@"Project background paragraph with ID ""{paragraphId}"" and ProjectId ""{projectId}"" does not exist.");
 
         // Compare the token User ID with the User ID of the project whose background paragraph is about to be updated
         // A user is only allowed to update their own projects.
@@ -144,5 +144,67 @@ public class ParagraphService
         _context.Paragraphs.Remove(background);
         await _context.SaveChangesAsync();
     }
+    /// <summary>
+    /// Adds new background paragraphs to a project by excluding any paragraphs
+    /// that already exist in the project's current background list.
+    /// </summary>
+    /// <param name="projectId">The ID of the project to update.</param>
+    /// <param name="incomingParagraphs">The full list of incoming background paragraphs (both new and possibly existing ones).</param>
+    /// <exception cref="KeyNotFoundException">Thrown if a project with the given ID is not found.</exception>
+    public async Task AddUniqueBackgroundParagraphsAsync(int projectId, List<Paragraph> incomingParagraphs)
+    {
+        // Retrieve the existing project with the given ID
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId)
+            ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+        // Get a list of IDs for paragraphs that are already part of the project
+        List<int> existingParagraphIds = project.Background.Select(p => p.Id).ToList();
+
+        // Filter incoming paragraphs to exclude any that already exist
+        var uniqueParagraphs = incomingParagraphs
+            .Where(p => !existingParagraphIds.Contains(p.Id))
+            .ToList();
+
+        // Add the unique paragraphs to the project
+        project.Background.AddRange(uniqueParagraphs);
+
+        await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Updates existing background paragraphs for a given project by applying any changes
+    /// from the incoming list of paragraphs that match by ID.
+    /// </summary>
+    /// <param name="projectId">The ID of the project whose paragraphs should be updated.</param>
+    /// <param name="incomingParagraphs">The list of paragraphs containing updated content.</param>
+    /// <exception cref="KeyNotFoundException">Thrown if the project with the specified ID is not found.</exception>
+    public async Task UpdateExistingBackgroundParagraphsAsync(int projectId, List<Paragraph> incomingParagraphs)
+    {
+        // Retrieve the project including its current background paragraphs
+        var project = await _context.Projects
+            .Include(p => p.Background)
+            .FirstOrDefaultAsync(p => p.Id == projectId)
+            ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+        // Loop through each existing paragraph and try to find a match in the incoming list
+        foreach (var existingParagraph in project.Background)
+        {
+            var updatedParagraph = incomingParagraphs.FirstOrDefault(p => p.Id == existingParagraph.Id);
+
+            if (updatedParagraph is not null)
+            {
+                // Update only if values have changed 
+                existingParagraph.Title = updatedParagraph.Title;
+                existingParagraph.Content = updatedParagraph.Content;
+                existingParagraph.ImageUrl = updatedParagraph.ImageUrl;
+                existingParagraph.ImageCaption = updatedParagraph.ImageCaption;
+                existingParagraph.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
+
 
 }

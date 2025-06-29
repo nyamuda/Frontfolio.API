@@ -8,10 +8,12 @@ public class ProjectService
 {
 
     private readonly ApplicationDbContext _context;
+    private readonly ParagraphService _paragraphService;
 
-    public ProjectService(ApplicationDbContext context)
+    public ProjectService(ApplicationDbContext context, ParagraphService paragraphService)
     {
         _context = context;
+        _paragraphService = paragraphService;
     }
 
     //Get a project with a given ID 
@@ -138,8 +140,17 @@ public class ProjectService
         existingProject.VideoUrl = project.VideoUrl;
         existingProject.LiveUrl = project.LiveUrl;
         existingProject.TechStack = project.TechStack;
-        existingProject.Background = project.Background;
         existingProject.UpdatedAt = DateTime.UtcNow;
+
+        await _paragraphService.AddUniqueBackgroundParagraphsAsync(existingProject.Id, project.Background);
+        await _paragraphService.UpdateExistingBackgroundParagraphsAsync(existingProject.Id, project.Background);
+
+        //get the project
+        //get an list of Ids of existing project background paragraphs
+        //loop the new paragraphs and check if the Id of each existing  in the list of Ids
+        //if so,remove that new paragraph from the list of new paragraphs
+        //finally, save the remaining new paragraphs
+
 
         // Check if the existing project has background paragraphs
         // and the updated project has removed all of them.
@@ -163,10 +174,6 @@ public class ProjectService
         _context.Projects.Remove(project);
         await _context.SaveChangesAsync();
     }
-
-
-    
-
 
 
 }

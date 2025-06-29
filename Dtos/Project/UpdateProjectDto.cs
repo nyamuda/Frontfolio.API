@@ -7,7 +7,8 @@ using System.Text.Json.Serialization;
 
 public class UpdateProjectDto
 {
-    
+    public int Id { get; set; }
+
     [Required]
     public string Title { get; set; }
 
@@ -72,7 +73,15 @@ public class UpdateProjectDto
             VideoUrl = projectDto.VideoUrl,
             LiveUrl = projectDto.LiveUrl,
             Status = projectDto.Status,
-            Background = projectDto.Background.Select(p =>UpdateParagraphDto.MapTo(p)).ToList(),
+            Background = projectDto.Background.Select(p => new Paragraph
+            {
+                Id=p.Id,
+                Title = p.Title,
+                Content = p.Content,
+                ImageUrl = p.ImageUrl,
+                ImageCaption = p.ImageCaption,
+                ParagraphType = ParagraphType.ProjectBackground
+            }).ToList(),
             Challenges = projectDto.Challenges,
             Achievements = projectDto.Achievements,
             Feedback = projectDto.Feedback,

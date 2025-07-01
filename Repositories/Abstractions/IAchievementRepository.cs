@@ -4,10 +4,10 @@ namespace Frontfolio.API.Repositories.Abstractions
 {
     public interface IAchievementRepository
     {
-        Task<ParagraphDto> DeleteByIdAsync(int id, int projectId);
+        Task<bool> DeleteByIdAsync(int id);
 
-        Task AddIfNotExistingAsync(int projectId, List<Achievement> incomingAchievements);
+        Task<bool> AddIfNotExistingAsync(int projectId, List<Achievement> incomingAchievements);
 
-        Task UpdateExistingAsync(int projectId, List<Achievement> incomingAchievements);
+        Task<bool> UpdateExistingAsync(int projectId, List<Achievement> incomingAchievements);
     }
 }

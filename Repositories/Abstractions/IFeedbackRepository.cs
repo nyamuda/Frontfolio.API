@@ -4,10 +4,10 @@ namespace Frontfolio.API.Repositories.Abstractions
 {
     public interface IFeedbackRepository
     {
-        Task<ParagraphDto> DeleteByIdAsync(int id, int projectId);
+        Task<bool> DeleteByIdAsync(int id);
 
-        Task AddIfNotExistingAsync(int projectId, List<Feedback> incomingFeedback);
+        Task<bool> AddIfNotExistingAsync(int projectId, List<Feedback> incomingFeedback);
 
-        Task UpdateExistingAsync(int projectId, List<Feedback> incomingFeedback);
+        Task<bool> UpdateExistingAsync(int projectId, List<Feedback> incomingFeedback);
     }
 }

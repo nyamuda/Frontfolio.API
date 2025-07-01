@@ -21,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <Folder Include="Dtos\Challenge\" />
+    <Folder Include="Dtos\Achievement\" />
+    <Folder Include="Dtos\Feedback\" />
   </ItemGroup>
 
 </Project>

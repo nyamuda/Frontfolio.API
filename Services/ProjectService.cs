@@ -26,7 +26,7 @@ public class ProjectService
             .FirstOrDefaultAsync(p => p.Id.Equals(id));
 
 
-        if (project is null) throw new KeyNotFoundException($@"Project with ID ""{id}"" doest not exist");
+        if (project is null) throw new KeyNotFoundException($@"Project with ID ""{id}"" doest not exist. Please check the URL or try again later.");
 
         return ProjectDto.MapFrom(project);
     }

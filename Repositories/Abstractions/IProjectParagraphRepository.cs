@@ -5,11 +5,11 @@ namespace Frontfolio.API.Repositories.Abstractions
     public interface IProjectParagraphRepository
     {
 
-        Task<ParagraphDto> DeleteByIdAsync(int id,int projectId);
+        Task<bool> DeleteByIdAsync(int id);
 
-        Task AddIfNotExistingAsync(int projectId, List<Paragraph> incomingParagraphs);
+        Task<bool> AddIfNotExistingAsync(int projectId, List<Paragraph> incomingParagraphs);
 
-        Task UpdateExistingAsync(int projectId, List<Paragraph> incomingParagraphs);
+        Task<bool> UpdateExistingAsync(int projectId, List<Paragraph> incomingParagraphs);
 
 
     }

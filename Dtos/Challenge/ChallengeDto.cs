@@ -1,6 +1,6 @@
 ﻿
 public class ChallengeDto
-    {
+{
     public required int Id { get; set; }
 
     public required string Title { get; set; }
@@ -11,9 +11,9 @@ public class ChallengeDto
 
     public required int ProjectId { get; set; }
 
-    public DateTime CreatedAt { get; set; } 
+    public DateTime CreatedAt { get; set; }
 
-    
+
 
     public static ChallengeDto MapFrom(Challenge challenge)
     {

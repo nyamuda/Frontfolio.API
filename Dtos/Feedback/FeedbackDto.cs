@@ -13,9 +13,12 @@ public class FeedbackDto
 
     public required int ProjectId { get; set; }
 
-    public required DateTime SubmittedAt { get; set; } 
+    public required DateTime SubmittedAt { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
 
 
     public static FeedbackDto MapFrom(Feedback feedback)
@@ -28,7 +31,8 @@ public class FeedbackDto
             Comment = feedback.Comment,
             ProjectId = feedback.ProjectId,
             SubmittedAt = feedback.SubmittedAt,
-            CreatedAt=feedback.CreatedAt
+            CreatedAt = feedback.CreatedAt,
+            UpdatedAt=feedback.UpdatedAt
         };
     }
 }

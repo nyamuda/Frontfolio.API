@@ -10,8 +10,8 @@ public class AchievementDto
    
     public required int ProjectId { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; } 
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; } 
 
 
 

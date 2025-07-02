@@ -11,7 +11,9 @@ public class ChallengeDto
 
     public required int ProjectId { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } 
+
+    public DateTime UpdatedAt { get; set; } 
 
 
 
@@ -24,7 +26,8 @@ public class ChallengeDto
             Problem = challenge.Problem,
             Solution = challenge.Solution,
             ProjectId = challenge.ProjectId,
-            CreatedAt = challenge.CreatedAt
+            CreatedAt = challenge.CreatedAt,
+            UpdatedAt=challenge.UpdatedAt
 
         };
     }

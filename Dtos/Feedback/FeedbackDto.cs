@@ -15,7 +15,7 @@ public class FeedbackDto
 
     public required DateTime SubmittedAt { get; set; } 
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
 
     public static FeedbackDto MapFrom(Feedback feedback)

@@ -15,9 +15,9 @@ public class Feedback
 
     public Project? Project { get; set; }
 
-    public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+    public DateTime SubmittedAt { get; set; }
 
-    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
 
 

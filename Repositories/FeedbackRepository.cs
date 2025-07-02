@@ -24,18 +24,18 @@ namespace Frontfolio.API.Repositories
             return true;
 
         }
-        public async Task<bool> AddIfNotExistingAsync(int projectId, List<Feedback> incomingParagraphs)
+        public async Task<bool> AddIfNotExistingAsync(int projectId, List<Feedback> incomingFeedback)
         {
             var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
             if (project is null) return false;
 
-            // Get a list of IDs for paragraphs that are already part of the project
-            List<int> existingParagraphIds = project.Background.Select(p => p.Id).ToList();
+            // Get a list of IDs for feedback that is already part of the project
+            List<int> existingFeedbackIds = project.Background.Select(p => p.Id).ToList();
 
             // Filter incoming feedback to exclude any that already exist
-            var uniqueFeedback = incomingParagraphs
-                .Where(p => !existingParagraphIds.Contains(p.Id))
+            var uniqueFeedback = incomingFeedback
+                .Where(p => !existingFeedbackIds.Contains(p.Id))
                 .ToList();
 
             // Add the unique feedback to the project

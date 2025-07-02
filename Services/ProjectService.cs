@@ -8,9 +8,9 @@ public class ProjectService
 {
 
     private readonly ApplicationDbContext _context;
-    private readonly ParagraphService _paragraphService;
+    private readonly ProjectParagraphService _paragraphService;
 
-    public ProjectService(ApplicationDbContext context, ParagraphService paragraphService)
+    public ProjectService(ApplicationDbContext context, ProjectParagraphService paragraphService)
     {
         _context = context;
         _paragraphService = paragraphService;

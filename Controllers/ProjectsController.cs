@@ -12,9 +12,9 @@ public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;
     private readonly JwtService _jwtService;
-    private readonly ParagraphService _paragraphService;
+    private readonly ProjectParagraphService _paragraphService;
 
-    public ProjectsController(ProjectService projectService, JwtService jwtService,ParagraphService paragraphService)
+    public ProjectsController(ProjectService projectService, JwtService jwtService,ProjectParagraphService paragraphService)
     {
         _projectService = projectService;
         _jwtService = jwtService;

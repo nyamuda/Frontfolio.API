@@ -29,7 +29,8 @@ public class UpdateFeedbackDto
             Comment = feedbackDto.Comment,
             ProjectId = feedbackDto.ProjectId,
             SubmittedAt = feedbackDto.SubmittedAt,
-            
+            UpdatedAt = DateTime.UtcNow
+
         };
     }
 }

@@ -26,7 +26,7 @@ public class UpdateChallengeDto
             Problem = challengeDto.Problem,
             Solution = challengeDto.Solution,
             ProjectId = challengeDto.ProjectId,
-           
+            UpdatedAt = DateTime.UtcNow
 
         };
     }

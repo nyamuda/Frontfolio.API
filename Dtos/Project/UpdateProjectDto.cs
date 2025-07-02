@@ -85,6 +85,7 @@ public class UpdateProjectDto
             Challenges = projectDto.Challenges,
             Achievements = projectDto.Achievements,
             Feedback = projectDto.Feedback,
+            UpdatedAt = DateTime.UtcNow
 
         };
 

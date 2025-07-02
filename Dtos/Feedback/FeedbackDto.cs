@@ -27,7 +27,8 @@ public class FeedbackDto
             AuthorRole = feedback.AuthorRole,
             Comment = feedback.Comment,
             ProjectId = feedback.ProjectId,
-            SubmittedAt = feedback.SubmittedAt
+            SubmittedAt = feedback.SubmittedAt,
+            CreatedAt=feedback.CreatedAt
         };
     }
 }

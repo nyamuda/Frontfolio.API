@@ -2,9 +2,10 @@
 using Frontfolio.API.Data;
 using Frontfolio.API.Dtos.Auth;
 using Frontfolio.API.Models;
+using Frontfolio.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-public class ProjectService
+public class ProjectService:IProjectService
 {
 
     private readonly ApplicationDbContext _context;
@@ -17,7 +18,7 @@ public class ProjectService
     }
 
     //Get a project with a given ID 
-    public async Task<ProjectDto> GetProjectById(int id)
+    public async Task<ProjectDto> Get(int id, int tokenUserId)
     {
         var project = await _context.Projects
             .Include(p => p.Background)
@@ -27,6 +28,9 @@ public class ProjectService
 
 
         if (project is null) throw new KeyNotFoundException($@"Project with ID ""{id}"" doest not exist. Please check the URL or try again later.");
+
+        // A user is only allowed to access their own project
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
 
         return ProjectDto.MapFrom(project);
     }

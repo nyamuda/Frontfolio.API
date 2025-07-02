@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Challenge\" />
     <Folder Include="Dtos\Achievement\" />
   </ItemGroup>
 

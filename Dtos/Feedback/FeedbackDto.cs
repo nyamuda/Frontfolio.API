@@ -1,7 +1,7 @@
 ﻿
 using Frontfolio.API.Models;
 
-public class Feedback
+public class FeedbackDto
 {
     public int Id { get; set; }
 
@@ -13,13 +13,8 @@ public class Feedback
 
     public required int ProjectId { get; set; }
 
-    public Project? Project { get; set; }
+    public DateTime SubmittedAt { get; set; } 
 
-    public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
-
-    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
-
-
-
+    public DateTime? CreatedAt { get; set; }
 }
 

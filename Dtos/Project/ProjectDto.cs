@@ -36,11 +36,11 @@ public class ProjectDto
 
     public List<ParagraphDto> Background { get; set; } = [];
 
-    public List<Challenge> Challenges { get; set; } = [];
+    public List<ChallengeDto> Challenges { get; set; } = [];
 
-    public List<Achievement> Achievements { get; set; } = [];
+    public List<AchievementDto> Achievements { get; set; } = [];
 
-    public List<Feedback> Feedback { get; set; } = [];
+    public List<FeedbackDto> Feedback { get; set; } = [];
 
     public int UserId { get; set; }
 
@@ -69,9 +69,9 @@ public class ProjectDto
             LiveUrl = project.LiveUrl,
             Status = project.Status,
             Background = project.Background.Select(p => ParagraphDto.MapFrom(p)).ToList(),
-            Challenges=project.Challenges,
-            Achievements=project.Achievements,
-            Feedback=project.Feedback,
+            Challenges=project.Challenges.Select(c => ChallengeDto.MapFrom(c)).ToList(),
+            Achievements=project.Achievements.Select(a =>AchievementDto.MapFrom(a)).ToList(),
+            Feedback=project.Feedback.Select(f =>FeedbackDto.MapFrom(f)).ToList(),
             UserId = project.UserId,
             CreatedAt=project.CreatedAt,
             UpdatedAt=project.UpdatedAt

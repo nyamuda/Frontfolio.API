@@ -17,11 +17,10 @@ public class AddFeedbackDto
 
 
 
-    public static Feedback MapTo(UpdateFeedbackDto feedbackDto)
+    public static Feedback MapTo(AddFeedbackDto feedbackDto)
     {
         return new Feedback
-        {
-            
+        {          
             AuthorName = feedbackDto.AuthorName,
             AuthorRole = feedbackDto.AuthorRole,
             Comment = feedbackDto.Comment,

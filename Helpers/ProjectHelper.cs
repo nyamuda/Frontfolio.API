@@ -12,7 +12,7 @@ public class ProjectHelper
     /// <exception cref="UnauthorizedAccessException">
     /// Thrown if the project does not belong to the specified user.
     /// </exception>
-    public void EnsureUserOwnsProject(int tokenUserId, Project project)
+    public static void EnsureUserOwnsProject(int tokenUserId, Project project)
     {
         if (project.UserId != tokenUserId)
             throw new UnauthorizedAccessException("You do not have permission to modify this project's background paragraph.");

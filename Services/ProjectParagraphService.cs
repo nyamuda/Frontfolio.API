@@ -44,12 +44,10 @@ public class ProjectParagraphService:IParagraphService
             .FirstOrDefaultAsync(p => p.Id.Equals(paragraphId) && p.ProjectId.Equals(projectId))
             ?? throw new KeyNotFoundException($@"Project background paragraph with ID ""{paragraphId}"" and ProjectId ""{projectId}"" does not exist.");
 
-        // Compare the token User ID with the User ID of the project whose background paragraph is about to be updated
-        // A user is only allowed to update their own projects.
-        // If the user ID from the token does not match the project owner's ID, deny access.
-        if (!project.UserId.Equals(tokenUserId))
-            throw new UnauthorizedAccessException("You don't have permission to delete this project background.");
 
+        // A user is only allowed to delete their own projects.
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
+       
         _context.Paragraphs.Remove(background);
         await _context.SaveChangesAsync();
     }

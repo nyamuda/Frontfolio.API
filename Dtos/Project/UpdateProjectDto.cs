@@ -48,11 +48,11 @@ public class UpdateProjectDto
 
     public List<UpdateParagraphDto> Background { get; set; } = [];
 
-    public List<Challenge> Challenges { get; set; } = [];
+    public List<UpdateChallengeDto> Challenges { get; set; } = [];
 
-    public List<Achievement> Achievements { get; set; } = [];
+    public List<UpdateAchievementDto> Achievements { get; set; } = [];
 
-    public List<Feedback> Feedback { get; set; } = [];
+    public List<UpdateFeedbackDto> Feedback { get; set; } = [];
 
 
 
@@ -82,9 +82,9 @@ public class UpdateProjectDto
                 ImageCaption = p.ImageCaption,
                 ParagraphType = ParagraphType.ProjectBackground
             }).ToList(),
-            Challenges = projectDto.Challenges,
-            Achievements = projectDto.Achievements,
-            Feedback = projectDto.Feedback,
+            Challenges = projectDto.Challenges.Select(c =>UpdateChallengeDto.MapTo(c)).ToList(),
+            Achievements = projectDto.Achievements.Select(a =>UpdateAchievementDto.MapTo(a)).ToList(),
+            Feedback = projectDto.Feedback.Select(f =>UpdateFeedbackDto.MapTo(f)).ToList(),
             UpdatedAt = DateTime.UtcNow
 
         };

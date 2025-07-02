@@ -45,11 +45,11 @@ public class AddProjectDto
 
     public List<AddParagraphDto> Background { get; set; } = [];
 
-    public List<Challenge> Challenges { get; set; } = [];
+    public List<AddChallengeDto> Challenges { get; set; } = [];
 
-    public List<Achievement> Achievements { get; set; } = [];
+    public List<AddAchievementDto> Achievements { get; set; } = [];
 
-    public List<Feedback> Feedback { get; set; } = [];
+    public List<AddFeedbackDto> Feedback { get; set; } = [];
 
 
 
@@ -77,9 +77,9 @@ public class AddProjectDto
             ImageUrl=p.ImageUrl,
             ImageCaption=p.ImageCaption,    
             }).ToList(),
-            Challenges = projectDto.Challenges,
-            Achievements = projectDto.Achievements,
-            Feedback = projectDto.Feedback,
+            Challenges = projectDto.Challenges.Select(c => AddChallengeDto.MapTo(c)).ToList(),
+            Achievements = projectDto.Achievements.Select(a => AddAchievementDto.MapTo(a)).ToList(),
+            Feedback = projectDto.Feedback.Select(f =>AddFeedbackDto.MapTo(f)).ToList(),
 
         };
 

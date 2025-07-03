@@ -13,12 +13,24 @@ public class ProjectsController : ControllerBase
     private readonly ProjectService _projectService;
     private readonly JwtService _jwtService;
     private readonly ProjectParagraphService _paragraphService;
+    private readonly ChallengeService _challengeService;
+    private readonly AchievementService _achievementService;
+    private readonly FeedbackService _feedbackService;
 
-    public ProjectsController(ProjectService projectService, JwtService jwtService,ProjectParagraphService paragraphService)
+    public ProjectsController(ProjectService projectService, 
+        JwtService jwtService, 
+        ProjectParagraphService paragraphService,
+        ChallengeService challengeService,
+        AchievementService achievementService,
+        FeedbackService feedbackService
+        )
     {
         _projectService = projectService;
         _jwtService = jwtService;
         _paragraphService = paragraphService;
+        _achievementService = achievementService;
+        _challengeService = challengeService;
+        _feedbackService = feedbackService;
 
     }
 
@@ -35,13 +47,13 @@ public class ProjectsController : ControllerBase
             //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
-                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+                throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
 
             //Get the project       
             if (int.TryParse(tokenUserId, out int userId))
             {
-                var project = await _projectService.GetAsync(projectId:id,tokenUserId:userId);
+                var project = await _projectService.GetAsync(projectId: id, tokenUserId: userId);
                 return Ok(project);
             }
             //throw an exception if tokenUserId cannot be parsed
@@ -72,7 +84,7 @@ public class ProjectsController : ControllerBase
 
 
     [HttpGet]
-    public async Task<IActionResult> GetProjects(ProjectSortOption? sortBy, int page = 1, int pageSize = 5)
+    public async Task<IActionResult> GetAll(ProjectSortOption? sortBy, int page = 1, int pageSize = 5)
     {
         try
         {
@@ -82,18 +94,18 @@ public class ProjectsController : ControllerBase
             //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
-                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+                throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
             //Get the paginated projects for a user with the given ID
             if (int.TryParse(tokenUserId, out int userId))
             {
                 PageInfo<ProjectDto> paginatedProjects = await _projectService
-                .GetProjects(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy);
+                .GetAllAsync(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy);
 
                 return Ok(paginatedProjects);
             }
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
         }
         catch (KeyNotFoundException ex)
@@ -129,18 +141,18 @@ public class ProjectsController : ControllerBase
             //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
-                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+                throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
-           if(int.TryParse(tokenUserId,out int userId))
+            if (int.TryParse(tokenUserId, out int userId))
             {
                 //Add the new project
-                var project = await _projectService.AddProject(userId, addProjectDto);
+                var project = await _projectService.CreateAsync(userId, addProjectDto);
 
                 return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
             }
 
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
         }
         catch (KeyNotFoundException ex)
@@ -178,25 +190,18 @@ public class ProjectsController : ControllerBase
             //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
-                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+                throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
-            // Compare the User ID from the token with the User ID of the project to be updated
-            // A user is only allowed to update their own projects.
-            // If the user ID from the token does not match the project owner's ID, deny access.
-           if(int.TryParse(tokenUserId,out int userId))
+            if (int.TryParse(tokenUserId, out int userId))
             {
-                var oldProject = await _projectService.GetProjectById(id);
-                if (!oldProject.UserId.Equals(userId))
-                    return Forbid("You don't have permission to update this project.");
-
                 //update project
-                await _projectService.UpdateProject(userId: userId, projectId: id, updateProjectDto);
+                await _projectService.UpdateAsync(projectId: id, tokenUserId: userId, updateProjectDto);
 
                 return NoContent();
             }
 
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
         }
         catch (KeyNotFoundException ex)
@@ -233,25 +238,19 @@ public class ProjectsController : ControllerBase
             //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
-                throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+                throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
-            // Compare the User ID from the token with the User ID of the project to be deleted
-            // A user is only allowed to delete their own projects.
-            // If the user ID from the token does not match the project owner's ID, deny access.
+
             if (int.TryParse(tokenUserId, out int userId))
             {
-                var oldProject = await _projectService.GetProjectById(id);
-                if (!oldProject.UserId.Equals(userId))
-                    return Forbid("You don't have permission to delete this project.");
-
                 //delete project
-                await _projectService.DeleteProject(id);
+                await _projectService.DeleteAsync(projectId: id, tokenUserId: userId);
 
                 return NoContent();
             }
 
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
         }
         catch (KeyNotFoundException ex)
@@ -275,10 +274,10 @@ public class ProjectsController : ControllerBase
             return StatusCode(500, response);
         }
     }
-   
+
     //Delete background paragraph for a specific project
     [HttpDelete("{projectId}/backgrounds/{paragraphId}")]
-    public async Task<IActionResult> UpdateBackgroundParagraph(int projectId,int paragraphId)
+    public async Task<IActionResult> DeleteProjectBackgroundParagraph(int projectId, int paragraphId)
     {
         try
         {
@@ -288,20 +287,66 @@ public class ProjectsController : ControllerBase
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             //Get the user ID claim from the token
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
-                ?? throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+                ?? throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
             if (int.TryParse(tokenUserId, out int userId))
             {
-                await _paragraphService
-                    .DeleteProjectBackgroundParagraph(projectId, paragraphId, userId);
+                await _paragraphService.DeleteByIdAsync(projectId: projectId, paragraphId: paragraphId, tokenUserId: userId);
                 return NoContent();
             }
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
         }
 
-         catch (KeyNotFoundException ex)
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
+
+    }
+
+    //Delete a challenge for a specific project
+    [HttpDelete("{projectId}/challenges/{challengeId}")]
+    public async Task<IActionResult> DeleteProjectChallenge(int projectId, int challengeId)
+    {
+        try
+        {
+            //Retrieve the access token from the request
+            var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+            //Manually validate the token
+            ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+            //Get the user ID claim from the token
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+            if (int.TryParse(tokenUserId, out int userId))
+            {
+                await _challengeService.DeleteByIdAsync(projectId: projectId, challengeId: challengeId, tokenUserId: userId);
+                return NoContent();
+            }
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+        }
+
+        catch (KeyNotFoundException ex)
         {
             return NotFound(new { message = ex.Message });
 
@@ -325,5 +370,5 @@ public class ProjectsController : ControllerBase
     }
 
 
-    
+
 }

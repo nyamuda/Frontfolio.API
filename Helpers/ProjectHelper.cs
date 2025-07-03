@@ -15,7 +15,7 @@ public class ProjectHelper
     public static void EnsureUserOwnsProject(int tokenUserId, Project project)
     {
         if (project.UserId != tokenUserId)
-            throw new UnauthorizedAccessException("You do not have permission to modify this project's background paragraph.");
+            throw new UnauthorizedAccessException("You do not have permission to modify this project.");
     }
 
 

@@ -39,7 +39,7 @@ public class ProjectService : IProjectService
 
         if (project is null) throw new KeyNotFoundException($@"Project with ID ""{projectId}"" doest not exist. Please check the URL or try again later.");
 
-        // A user is only allowed to access their own project
+        //Only the owner the project is allowed to access it
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
 
         return ProjectDto.MapFrom(project);
@@ -141,7 +141,7 @@ public class ProjectService : IProjectService
         Project existingProject = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
             ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
 
-        // A user is only allowed to update their own project
+        //Only the owner the project is allowed to update it
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, existingProject);
 
         // Update all properties
@@ -168,14 +168,26 @@ public class ProjectService : IProjectService
         //update existing ones
         await _paragraphService.UpdateExistingAsync(existingProject.Id, project.Background);
 
-        //STEP 12. Update the nested challenges
-        //The updated challenges list contains the updated challenges as well as some new ones
-        //add new challenges
-        await _paragraphService.AddIfNotExistingAsync(existingProject.Id, project.Background);
+        //STEP 2. Update the nested challenges
+        //The updated challenge list contains the updated challenges as well as some new ones
+        //add the new challenges
+        await _challengeService.AddIfNotExistingAsync(existingProject.Id, project.Challenges);
         //update existing ones
-        await _paragraphService.UpdateExistingAsync(existingProject.Id, project.Background);
+        await _challengeService.UpdateExistingAsync(existingProject.Id, project.Challenges);
 
+        //STEP 3. Update the nested achievements
+        //The updated achievement list contains the updated achievements as well as some new ones
+        //add the new achievements
+        await _achievementService.AddIfNotExistingAsync(existingProject.Id, project.Achievements);
+        //update existing ones
+        await _achievementService.UpdateExistingAsync(existingProject.Id, project.Achievements);
 
+        //STEP 4. Update the nested feedback items
+        //The updated feedback list contains the updated feedback items as well as new ones
+        //add the new feedback items
+        await _feedbackService.AddIfNotExistingAsync(existingProject.Id, project.Feedback);
+        //update existing ones
+        await _feedbackService.UpdateExistingAsync(existingProject.Id, project.Feedback);
 
 
 
@@ -183,10 +195,13 @@ public class ProjectService : IProjectService
     }
 
     //Delete a project
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int projectId,int tokenUserId)
     {
-        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(id))
-            ?? throw new KeyNotFoundException($@"Project with ID ""{id}"" does not exist.");
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
+            ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+        //Only the owner the project is allowed to delete it
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
 
         _context.Projects.Remove(project);
         await _context.SaveChangesAsync();

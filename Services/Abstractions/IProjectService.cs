@@ -2,7 +2,7 @@
 {
     public interface IProjectService
     {
-        Task<ProjectDto> GetAysnc(int projectId,int tokenUserId);
+        Task<ProjectDto> GetAsync(int projectId,int tokenUserId);
 
         Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption? sortOption);
 

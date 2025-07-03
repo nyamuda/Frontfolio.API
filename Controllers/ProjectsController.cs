@@ -415,6 +415,53 @@ public class ProjectsController : ControllerBase
 
     }
 
+    //Delete feedback for a specific project
+    [HttpDelete("{projectId}/feedback/{feedbackId}")]
+    public async Task<IActionResult> DeleteProjectFeedback(int projectId, int feedbackId)
+    {
+        try
+        {
+            //Retrieve the access token from the request
+            var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+            //Manually validate the token
+            ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+            //Get the user ID claim from the token
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+            if (int.TryParse(tokenUserId, out int userId))
+            {
+                await _feedbackService.DeleteByIdAsync(projectId: projectId,feedbackId: feedbackId, tokenUserId: userId);
+                return NoContent();
+            }
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+        }
+
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
+
+    }
+
 
 
 

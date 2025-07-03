@@ -61,7 +61,7 @@ public class ProjectService : IProjectService
     {
         var query = _context.Projects.Where(p => p.UserId.Equals(userId)).AsQueryable();
 
-        //sort the projects by the sortOption
+        //sort the projects by the provided sortOption
         query = sortOption switch
         {
             ProjectSortOption.StartDate => query.OrderByDescending(p => p.StartDate),

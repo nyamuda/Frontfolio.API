@@ -25,7 +25,7 @@ public class AddFeedbackDto
             AuthorRole = feedbackDto.AuthorRole,
             Comment = feedbackDto.Comment,
             ProjectId = feedbackDto.ProjectId,
-            SubmittedAt = feedbackDto.SubmittedAt,
+            SubmittedAt = TimeZoneInfo.ConvertTimeToUtc(feedbackDto.SubmittedAt),
 
         };
     }

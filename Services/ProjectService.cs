@@ -119,10 +119,6 @@ public class ProjectService : IProjectService
         //add the user ID
         project.UserId = userId;
 
-        //convert start and end dates to UTC time
-        project.StartDate = TimeZoneInfo.ConvertTimeToUtc(project.StartDate);
-        project.EndDate = TimeZoneInfo.ConvertTimeToUtc(project.EndDate);
-
         //save the new project
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
@@ -153,8 +149,8 @@ public class ProjectService : IProjectService
         existingProject.Status = project.Status;
         existingProject.SortOrder = project.SortOrder;
         existingProject.DifficultyLevel = project.DifficultyLevel;
-        existingProject.StartDate = TimeZoneInfo.ConvertTimeToUtc(project.StartDate);
-        existingProject.EndDate = TimeZoneInfo.ConvertTimeToUtc(project.EndDate);
+        existingProject.StartDate = project.StartDate;
+        existingProject.EndDate = project.EndDate;
         existingProject.Summary = project.Summary;
         existingProject.GitHubUrl = project.GitHubUrl;
         existingProject.ImageUrl = project.ImageUrl;

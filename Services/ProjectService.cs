@@ -5,29 +5,39 @@ using Frontfolio.API.Models;
 using Frontfolio.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-public class ProjectService:IProjectService
+public class ProjectService : IProjectService
 {
 
     private readonly ApplicationDbContext _context;
     private readonly ProjectParagraphService _paragraphService;
+    private readonly ChallengeService _challengeService;
+    private readonly AchievementService _achievementService;
+    private readonly FeedbackService _feedbackService;
 
-    public ProjectService(ApplicationDbContext context, ProjectParagraphService paragraphService)
+    public ProjectService(ApplicationDbContext context,
+        ProjectParagraphService paragraphService,
+        ChallengeService challengeService,
+        AchievementService achievementService,
+        FeedbackService feedbackService)
     {
         _context = context;
         _paragraphService = paragraphService;
+        _challengeService = challengeService;
+        _achievementService = achievementService;
+        _feedbackService = feedbackService;
     }
 
     //Get a project with a given ID 
-    public async Task<ProjectDto> Get(int id, int tokenUserId)
+    public async Task<ProjectDto> GetAsync(int projectId, int tokenUserId)
     {
         var project = await _context.Projects
             .Include(p => p.Background)
             .AsSplitQuery()
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id.Equals(id));
+            .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
 
-        if (project is null) throw new KeyNotFoundException($@"Project with ID ""{id}"" doest not exist. Please check the URL or try again later.");
+        if (project is null) throw new KeyNotFoundException($@"Project with ID ""{projectId}"" doest not exist. Please check the URL or try again later.");
 
         // A user is only allowed to access their own project
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
@@ -47,7 +57,7 @@ public class ProjectService:IProjectService
     /// A tuple containing:
     /// - A <see cref="PageInfo"/> object with pagination metadata and a list of the projects.
     /// </returns>
-    public async Task<PageInfo<ProjectDto>> GetProjects(int page, int pageSize, int userId, ProjectSortOption? sortOption)
+    public async Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption? sortOption)
     {
         var query = _context.Projects.Where(p => p.UserId.Equals(userId)).AsQueryable();
 
@@ -94,7 +104,7 @@ public class ProjectService:IProjectService
     }
 
     //Add a new project
-    public async Task<ProjectDto> AddProject(int userId, AddProjectDto addProjectDto)
+    public async Task<ProjectDto> CreateAsync(int userId, AddProjectDto addProjectDto)
     {
         //check if user with the given ID exist
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId));
@@ -118,18 +128,21 @@ public class ProjectService:IProjectService
 
 
     //Update an existing project
-    public async Task UpdateProject(int userId, int projectId, UpdateProjectDto updateProjectDto)
+    public async Task UpdateAsync(int projectId, int tokenUserId, UpdateProjectDto updateProjectDto)
     {
         //check if user with the given ID exist
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId))
-            ?? throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(tokenUserId))
+            ?? throw new KeyNotFoundException($@"User with ID ""{tokenUserId}"" does not exist.");
 
         //map UpdateProjectDto to Project
         Project project = UpdateProjectDto.MapTo(updateProjectDto);
 
-        //get the project
+        //get the existing project
         Project existingProject = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
             ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
+
+        // A user is only allowed to update their own project
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, existingProject);
 
         // Update all properties
         existingProject.Title = project.Title;
@@ -146,31 +159,31 @@ public class ProjectService:IProjectService
         existingProject.TechStack = project.TechStack;
         existingProject.UpdatedAt = DateTime.UtcNow;
 
-        await _paragraphService.AddUniqueBackgroundParagraphsAsync(existingProject.Id, project.Background);
-        await _paragraphService.UpdateExistingBackgroundParagraphsAsync(existingProject.Id, project.Background);
-
-        //get the project
-        //get an list of Ids of existing project background paragraphs
-        //loop the new paragraphs and check if the Id of each existing  in the list of Ids
-        //if so,remove that new paragraph from the list of new paragraphs
-        //finally, save the remaining new paragraphs
-
-
-        // Check if the existing project has background paragraphs
-        // and the updated project has removed all of them.
-        // If so, delete all the existing background paragraphs from the database.
-        //if (existingProject.Background.Count > 0 && project.Background.Count == 0)
-        //{
-        //    _context.Paragraphs.RemoveRange(existingProject.Background);
-        //}
-
         await _context.SaveChangesAsync();
+
+        //STEP 1. Update the nested background paragraphs
+        //The updated background paragraph list contains the updated paragraphs as well as some new ones
+        //add the new paragraphs
+        await _paragraphService.AddIfNotExistingAsync(existingProject.Id, project.Background);
+        //update existing ones
+        await _paragraphService.UpdateExistingAsync(existingProject.Id, project.Background);
+
+        //STEP 12. Update the nested challenges
+        //The updated challenges list contains the updated challenges as well as some new ones
+        //add new challenges
+        await _paragraphService.AddIfNotExistingAsync(existingProject.Id, project.Background);
+        //update existing ones
+        await _paragraphService.UpdateExistingAsync(existingProject.Id, project.Background);
+
+
+
+
 
 
     }
 
     //Delete a project
-    public async Task DeleteProject(int id)
+    public async Task DeleteAsync(int id)
     {
         var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(id))
             ?? throw new KeyNotFoundException($@"Project with ID ""{id}"" does not exist.");

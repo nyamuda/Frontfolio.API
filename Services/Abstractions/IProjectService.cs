@@ -2,15 +2,17 @@
 {
     public interface IProjectService
     {
-        Task<ProjectDto> Get(int id,int tokenUserId);
+        Task<ProjectDto> GetAysnc(int projectId,int tokenUserId);
 
-        Task<List<ProjectDto>> Get(int page, int pageSize, int userId, ProjectSortOption? sortOption);
+        Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption? sortOption);
 
-        Task<ProjectDto> Create(AddProjectDto projectDto);
+        Task<ProjectDto> CreateAsync(int userId, AddProjectDto projectDto);
 
-        Task Delete(int id,int tokenUserId);
+        Task UpdateAsync(int projectId,int tokenUserId, UpdateProjectDto updateProjectDto);
 
-        Task Update(int id,int tokenUserId, UpdateProjectDto projectDto);
+        Task DeleteAsync(int projectId,int tokenUserId);
+
+       
 
 
 

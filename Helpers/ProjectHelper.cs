@@ -12,10 +12,10 @@ public class ProjectHelper
     /// <exception cref="UnauthorizedAccessException">
     /// Thrown if the project does not belong to the specified user.
     /// </exception>
-    public static void EnsureUserOwnsProject(int tokenUserId, Project project)
+    public static void EnsureUserOwnsProject(int tokenUserId, Project project,string errorMessage)
     {
         if (project.UserId != tokenUserId)
-            throw new UnauthorizedAccessException("You do not have permission to modify this project.");
+            throw new UnauthorizedAccessException(errorMessage);
     }
 
 

@@ -40,6 +40,7 @@ public class ProjectService : IProjectService
         if (project is null) throw new KeyNotFoundException($@"Project with ID ""{projectId}"" doest not exist. Please check the URL or try again later.");
 
         //Only the owner the project is allowed to access it
+        const errorMessage= "You do not have permission to"
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
 
         return ProjectDto.MapFrom(project);

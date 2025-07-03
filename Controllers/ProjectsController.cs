@@ -368,6 +368,54 @@ public class ProjectsController : ControllerBase
         }
 
     }
+    //Delete an achievement for a specific project
+    [HttpDelete("{projectId}/achievements/{achievementId}")]
+    public async Task<IActionResult> DeleteProjectAchievement(int projectId, int achievementId)
+    {
+        try
+        {
+            //Retrieve the access token from the request
+            var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+            //Manually validate the token
+            ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+            //Get the user ID claim from the token
+            string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+            if (int.TryParse(tokenUserId, out int userId))
+            {
+                await _achievementService.DeleteByIdAsync(projectId: projectId, achievementId: achievementId, tokenUserId: userId);
+                return NoContent();
+            }
+            //throw an exception if tokenUserId cannot be parsed
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+        }
+
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+
+        }
+        catch (Exception ex)
+        {
+            var response = new
+            {
+                message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                details = ex.Message
+            };
+
+            return StatusCode(500, response);
+        }
+
+    }
+
+
 
 
 

@@ -42,7 +42,7 @@ public class JwtService
             new Claim(ClaimTypes.Role,user.Role.ToString()),
             new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
             new Claim(ClaimTypes.Email,user.Email),
-            new Claim("isVerified",user.isVerified.ToString().ToLower())
+            new Claim("isVerified",user.IsVerified.ToString().ToLower())
         ];
 
 

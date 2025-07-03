@@ -148,7 +148,7 @@ public class ProjectsController : ControllerBase
                 //Add the new project
                 var project = await _projectService.CreateAsync(userId, addProjectDto);
 
-                return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
+                return CreatedAtAction(actionName:nameof(Get), new { id = project.Id }, project);
             }
 
             //throw an exception if tokenUserId cannot be parsed

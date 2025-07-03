@@ -19,6 +19,10 @@ builder.Services.AddScoped<OtpService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<ProjectParagraphService>();
+builder.Services.AddScoped<ChallengeService>();
+builder.Services.AddScoped<AchievementService>();
+builder.Services.AddScoped<FeedbackService>();
+
 
 
 

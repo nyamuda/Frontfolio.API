@@ -32,6 +32,9 @@ public class ProjectService : IProjectService
     {
         var project = await _context.Projects
             .Include(p => p.Background)
+            .Include(p => p.Achievements)
+            .Include(p => p.Challenges)
+            .Include(p => p.Feedback)
             .AsSplitQuery()
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
@@ -52,7 +55,7 @@ public class ProjectService : IProjectService
     /// </summary>
     /// <param name="page">The current page number (1-based).</param>
     /// <param name="pageSize">The number of projects to return per page.</param>
-    /// <param name="UserId">The unique identifier of the user whose projects are being retrieved.</param>
+    /// <param name="userId">The unique identifier of the user whose projects are being retrieved.</param>
     /// <returns>
     /// A tuple containing:
     /// - A <see cref="PageInfo"/> object with pagination metadata and a list of the projects.
@@ -69,7 +72,7 @@ public class ProjectService : IProjectService
             ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
             ProjectSortOption.DifficultyLevel => query.OrderByDescending(p => p.DifficultyLevel),
             ProjectSortOption.CreatedAt => query.OrderByDescending(p =>p.CreatedAt),
-            _ => query.OrderByDescending(p => p.SortOrder) //default sort option is SortOrder
+            _ => query.OrderByDescending(p => p.SortOrder) //default sort option is `SortOrder`
         };
 
         List<ProjectDto> projects = await query

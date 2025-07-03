@@ -143,7 +143,7 @@ public class AuthService
             throw new KeyNotFoundException($@"User with email ""{otpVerificationDto.Email}"" does not exist.");
 
         //Finally, mark the user as verified
-        user.isVerified = true;
+        user.IsVerified = true;
         await _context.SaveChangesAsync();
 
     }

@@ -3,6 +3,7 @@
     StartDate,
     EndDate,
     SortOrder,
-    DifficultyLevel
+    DifficultyLevel,
+    CreatedAt
 
 }

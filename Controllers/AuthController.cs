@@ -226,7 +226,7 @@ public class AuthController : ControllerBase
 
 
     //Get user details using their token
-    [HttpGet]
+    [HttpGet("me")]
     [Authorize]
     public async Task<IActionResult> GetMe()
     {
@@ -238,7 +238,7 @@ public class AuthController : ControllerBase
             ClaimsPrincipal claimsPrincipal = _jwtService.ValidateJwtToken(accessToken);
             //The ID of the user from the token
             string tokenUserId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier)
-                ?? throw new KeyNotFoundException("Access token lacks the name identifier claim.");
+                ?? throw new KeyNotFoundException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
             //Get the user info using the token userId claim
             if(int.TryParse(tokenUserId,out int userId)) {
@@ -247,10 +247,7 @@ public class AuthController : ControllerBase
             }
 
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Access token lacks a valid name identifier claim.");
-
-
-
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
 
         }
         catch (KeyNotFoundException ex)

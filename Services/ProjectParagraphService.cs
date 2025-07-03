@@ -45,8 +45,8 @@ public class ProjectParagraphService:IParagraphService
             ?? throw new KeyNotFoundException($@"Project background paragraph with ID ""{paragraphId}"" and ProjectId ""{projectId}"" does not exist.");
 
 
-        // A user is only allowed to delete their own projects.
-        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
+        //Only the owner the project is allowed to delete its paragraph
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project, crudContext: CrudContext.Delete);
        
         _context.Paragraphs.Remove(background);
         await _context.SaveChangesAsync();

@@ -40,8 +40,7 @@ public class ProjectService : IProjectService
         if (project is null) throw new KeyNotFoundException($@"Project with ID ""{projectId}"" doest not exist. Please check the URL or try again later.");
 
         //Only the owner the project is allowed to access it
-        const errorMessage= "You do not have permission to"
-        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project,crudContext:CrudContext.Read);
 
         return ProjectDto.MapFrom(project);
     }
@@ -144,7 +143,7 @@ public class ProjectService : IProjectService
             ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
 
         //Only the owner the project is allowed to update it
-        ProjectHelper.EnsureUserOwnsProject(tokenUserId, existingProject);
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, existingProject, crudContext: CrudContext.Update);
 
         // Update all properties
         existingProject.Title = project.Title;
@@ -203,7 +202,7 @@ public class ProjectService : IProjectService
             ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
 
         //Only the owner the project is allowed to delete it
-        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project, crudContext: CrudContext.Delete);
 
         _context.Projects.Remove(project);
         await _context.SaveChangesAsync();

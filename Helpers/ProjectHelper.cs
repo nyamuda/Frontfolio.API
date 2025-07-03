@@ -17,10 +17,10 @@ public class ProjectHelper
     {
         string errorMessage = crudContext switch
         {
-            CrudContext.Create => "You don't have the permission to create this resource",
-            CrudContext.Update => "You don't have the permission to update this resource",
-            CrudContext.Delete => "You don't have the permission to delete this resource",
-            _ => "You don't have the permission to access this resource"
+            CrudContext.Create => "You don't have the permission to create this resource.",
+            CrudContext.Update => "You don't have the permission to update this resource.",
+            CrudContext.Delete => "You don't have the permission to delete this resource.",
+            _ => "You don't have the permission to access this resource."
 
         };
         if (project.UserId != tokenUserId)

@@ -40,8 +40,8 @@ using Microsoft.EntityFrameworkCore;
             ?? throw new KeyNotFoundException($@"Project feedback with ID ""{feedbackId}"" and ProjectId ""{projectId}"" does not exist.");
 
 
-        // A user is only allowed to delete their own project feedback.
-        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project);
+        //Only the owner the project is allowed to delete its feedback
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project, crudContext: CrudContext.Delete);
 
         _context.Feedback.Remove(feedback);
         await _context.SaveChangesAsync();

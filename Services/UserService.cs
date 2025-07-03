@@ -3,7 +3,7 @@ using Frontfolio.API.Dtos.Auth;
 using Microsoft.EntityFrameworkCore;
 
 
-public class UserService
+public class UserService:IUserService
 {
 
     private readonly ApplicationDbContext _context;
@@ -15,7 +15,7 @@ public class UserService
     }
 
 
-    public async Task<UserDto> GetUserById(int id)
+    public async Task<UserDto> GetAsync(int id)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(id));
 

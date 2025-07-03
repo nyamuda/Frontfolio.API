@@ -32,28 +32,20 @@ public class ProjectsController : ControllerBase
             //First, extract the user's access token from the Authorization header
             var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
 
-            //Manually validate the token and then grap the User ID from the token claims
+            //Manually validate the token and then grab the User ID from the token claims
             ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
             string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
                 throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
 
 
-            //Get the project
-            var project = await _projectService.GetProjectById(id);
-
-            // Compare the User ID from the token with the User ID of the project
-            // A user is only allowed to access their own projects.
-            // If the user ID from the token does not match the project owner's ID, deny access.
+            //Get the project       
             if (int.TryParse(tokenUserId, out int userId))
             {
-                if (project.UserId != userId)
-                    return Forbid("You don't have permission to view this project.");
-
+                var project = await _projectService.GetAsync(projectId:id,tokenUserId:userId);
                 return Ok(project);
             }
-
             //throw an exception if tokenUserId cannot be parsed
-            throw new UnauthorizedAccessException("Access denied. Token does not contain a valid user ID claim.");
+            throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
         }
         catch (KeyNotFoundException ex)
         {

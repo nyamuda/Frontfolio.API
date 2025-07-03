@@ -12,13 +12,14 @@ public class User
 
     public required string Password { get; set; }
 
-    public bool isVerified { get; set; } = false;
+    public bool IsVerified { get; set; } = false;
 
     public UserRole Role { get; set; } = UserRole.User;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public List<UserOtp> UserOtps { get; set; } = [];
+
 
 }
 

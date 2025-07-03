@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
              
             //For a user to access this resource
             //the ID from their access token must match the ID of the user they're trying to access
-            var user = await _userService.GetUserById(id);
+            var user = await _userService.GetAsync(id);
             if (!user.Id.ToString().Equals(tokenUserId)) return Forbid(ErrorMessageHelper.ForbiddenErrorMessage());
 
             return Ok(user);

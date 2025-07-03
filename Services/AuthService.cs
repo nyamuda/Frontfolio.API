@@ -43,14 +43,13 @@ public class AuthService
 
         //hash the password
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(addUserDto.Password);
-        addUserDto.Password = hashedPassword;
-
+        
         //create user instance
         User user = new()
         {
             Name = addUserDto.Name,
             Email = addUserDto.Email,
-            Password = addUserDto.Password
+            Password = hashedPassword
         };
 
         //save the new user

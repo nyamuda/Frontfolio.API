@@ -8,5 +8,8 @@ public static class ErrorMessageHelper
     public static string ForbiddenErrorMessage() =>
         "You do not have permission to access this resource.";
 
+    public static string MissingNameIdentifierMessage() =>
+        "Access denied. Token lacks a valid name identifier claim.";
+
 
 }

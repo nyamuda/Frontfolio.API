@@ -72,7 +72,7 @@ public class ProjectService : IProjectService
             ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
             ProjectSortOption.DifficultyLevel => query.OrderByDescending(p => p.DifficultyLevel),
             ProjectSortOption.CreatedAt => query.OrderByDescending(p =>p.CreatedAt),
-            _ => query.OrderByDescending(p => p.SortOrder) //default sort option is `SortOrder`
+            _ => query.OrderBy(p => p.SortOrder) //default sort option is `SortOrder`
         };
 
         List<ProjectDto> projects = await query

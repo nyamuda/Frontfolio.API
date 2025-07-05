@@ -3,6 +3,9 @@
     Title,
     Status,
     DifficultyLevel,
+    CreatedAt,
+    SortOrder,
+   
     
 
 }

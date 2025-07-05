@@ -1,4 +1,4 @@
-﻿public enum ProjectFilterOption
+﻿public enum ProjectStatusFilter
 {
     Published,
     Draft,

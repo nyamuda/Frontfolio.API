@@ -4,7 +4,7 @@
     {
         Task<ProjectDto> GetAsync(int projectId, int tokenUserId);
 
-        Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption sortOption, ProjectFilterOption filterOption);
+        Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption sortOption, ProjectStatusFilter filterOption);
 
         Task<ProjectDto> CreateAsync(int userId, AddProjectDto projectDto);
 

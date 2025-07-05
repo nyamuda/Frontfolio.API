@@ -85,7 +85,7 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
-        ProjectFilterOption status = ProjectFilterOption.All,
+        ProjectStatusFilter status = ProjectStatusFilter.All,
         ProjectSortOption sortBy = ProjectSortOption.SortOrder,
         int page = 1, int pageSize = 5)
     {

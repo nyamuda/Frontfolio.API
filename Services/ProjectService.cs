@@ -60,14 +60,20 @@ public class ProjectService : IProjectService
     /// A tuple containing:
     /// - A <see cref="PageInfo"/> object with pagination metadata and a list of the projects.
     /// </returns>
-    public async Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption? sortOption)
+    public async Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption? sortOption,ProjectFilterOption? filterOption)
     {
         var query = _context.Projects.Where(p => p.UserId.Equals(userId)).AsQueryable();
+
+        //filter the projects by status
+        query = filterOption switch { 
+            ProjectFilterOption.Published=> query.Where(p =>p.Status.Equals(ProjectStatus.Published)),
+            ProjectFilterOption.Draft =>query.Where(p => p.Status.Equals(ProjectStatus.Draft)),
+            _=>query
+        };
 
         //sort the projects by the provided sortOption
         query = sortOption switch
         {
-            ProjectSortOption.Status => query.OrderByDescending(p => p.Status),
             ProjectSortOption.Title => query.OrderByDescending(p => p.Title),  
             ProjectSortOption.DifficultyLevel => query.OrderByDescending(p => p.DifficultyLevel),
             ProjectSortOption.CreatedAt => query.OrderByDescending(p => p.CreatedAt),

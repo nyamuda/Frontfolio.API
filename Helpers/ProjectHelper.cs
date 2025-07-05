@@ -13,7 +13,7 @@ public class ProjectHelper
     /// <exception cref="UnauthorizedAccessException">
     /// Thrown if the project does not belong to the specified user.
     /// </exception>
-    public static void EnsureUserOwnsProject(int tokenUserId, Project project,CrudContext crudContext)
+    public static void EnsureUserOwnsProject(int tokenUserId, Project project, CrudContext crudContext)
     {
         string errorMessage = crudContext switch
         {
@@ -26,6 +26,15 @@ public class ProjectHelper
         if (project.UserId != tokenUserId)
             throw new UnauthorizedAccessException(errorMessage);
     }
+
+
+    public static ProjectSortOption GetProjectsSortOptionFromString(string sortBy) => sortBy switch
+    {
+        "title" => ProjectSortOption.Title,
+        "difficulty level" or "difficultyLevel" => ProjectSortOption.DifficultyLevel,
+        "created at" or "createdAt" => ProjectSortOption.CreatedAt,
+        _ => ProjectSortOption.SortOrder
+    };
 
 
 

@@ -1,5 +1,6 @@
 ﻿public enum ProjectFilterOption
 {
     Published,
-    Draft
+    Draft,
+    All
 }

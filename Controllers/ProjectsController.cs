@@ -17,8 +17,8 @@ public class ProjectsController : ControllerBase
     private readonly AchievementService _achievementService;
     private readonly FeedbackService _feedbackService;
 
-    public ProjectsController(ProjectService projectService, 
-        JwtService jwtService, 
+    public ProjectsController(ProjectService projectService,
+        JwtService jwtService,
         ProjectParagraphService paragraphService,
         ChallengeService challengeService,
         AchievementService achievementService,
@@ -84,7 +84,10 @@ public class ProjectsController : ControllerBase
 
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(ProjectSortOption? sortBy, int page = 1, int pageSize = 5)
+    public async Task<IActionResult> GetAll(
+        ProjectFilterOption filterOption = ProjectFilterOption.All,
+        ProjectSortOption sortBy = ProjectSortOption.SortOrder,
+        int page = 1, int pageSize = 5)
     {
         try
         {
@@ -101,7 +104,7 @@ public class ProjectsController : ControllerBase
             if (int.TryParse(tokenUserId, out int userId))
             {
                 PageInfo<ProjectDto> paginatedProjects = await _projectService
-                .GetAllAsync(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy);
+                .GetAllAsync(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy, filterOption: filterOption);
 
                 return Ok(paginatedProjects);
             }
@@ -149,7 +152,7 @@ public class ProjectsController : ControllerBase
                 //Add the new project
                 var project = await _projectService.CreateAsync(userId, addProjectDto);
 
-                return CreatedAtAction(actionName:nameof(Get), new { id = project.Id }, project);
+                return CreatedAtAction(actionName: nameof(Get), new { id = project.Id }, project);
             }
 
             //throw an exception if tokenUserId cannot be parsed
@@ -432,7 +435,7 @@ public class ProjectsController : ControllerBase
 
             if (int.TryParse(tokenUserId, out int userId))
             {
-                await _feedbackService.DeleteByIdAsync(projectId: projectId,feedbackId: feedbackId, tokenUserId: userId);
+                await _feedbackService.DeleteByIdAsync(projectId: projectId, feedbackId: feedbackId, tokenUserId: userId);
                 return NoContent();
             }
             //throw an exception if tokenUserId cannot be parsed

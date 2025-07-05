@@ -60,7 +60,7 @@ public class ProjectService : IProjectService
     /// A tuple containing:
     /// - A <see cref="PageInfo"/> object with pagination metadata and a list of the projects.
     /// </returns>
-    public async Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption? sortOption,ProjectFilterOption? filterOption)
+    public async Task<PageInfo<ProjectDto>> GetAllAsync(int page, int pageSize, int userId, ProjectSortOption sortOption,ProjectFilterOption filterOption)
     {
         var query = _context.Projects.Where(p => p.UserId.Equals(userId)).AsQueryable();
 
@@ -104,7 +104,7 @@ public class ProjectService : IProjectService
              }).ToListAsync();
 
         //check if there are still more projects for the user
-        int totalProjects = await _context.Projects.Where(p => p.UserId.Equals(userId)).CountAsync();
+        int totalProjects = await query.CountAsync();
         bool hasMore = totalProjects > page * pageSize;
 
         PageInfo<ProjectDto> pageInfo = new() { Page = page, PageSize = pageSize, HasMore = hasMore, Items = projects };

@@ -85,13 +85,13 @@ public class ProjectsController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
-        ProjectFilterOption filterOption = ProjectFilterOption.All,
+        ProjectFilterOption status = ProjectFilterOption.All,
         ProjectSortOption sortBy = ProjectSortOption.SortOrder,
         int page = 1, int pageSize = 5)
     {
         try
         {
-            Console.WriteLine($"Here is your sort option in controller {sortBy}");
+            Console.WriteLine($"Here is your filter option in controller {status}");
             //First, extract the user's access token from the Authorization header
             var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
 
@@ -104,7 +104,7 @@ public class ProjectsController : ControllerBase
             if (int.TryParse(tokenUserId, out int userId))
             {
                 PageInfo<ProjectDto> paginatedProjects = await _projectService
-                .GetAllAsync(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy, filterOption: filterOption);
+                .GetAllAsync(page: page, pageSize: pageSize, userId: userId, sortOption: sortBy, filterOption:status);
 
                 return Ok(paginatedProjects);
             }

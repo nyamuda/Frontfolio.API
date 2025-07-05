@@ -67,13 +67,13 @@ public class ProjectService : IProjectService
         //sort the projects by the provided sortOption
         query = sortOption switch
         {
-            ProjectSortOption.Status => query.OrderByDescending(p => p.Status),
-            ProjectSortOption.StartDate => query.OrderByDescending(p => p.StartDate),
-            ProjectSortOption.EndDate => query.OrderByDescending(p => p.EndDate),
-            ProjectSortOption.DifficultyLevel => query.OrderByDescending(p => p.DifficultyLevel),
-            ProjectSortOption.CreatedAt => query.OrderByDescending(p =>p.CreatedAt),
+            ProjectSortOption.Status => query.OrderByDescending(p => p.Status).ThenBy(p=>p.SortOrder),
+            ProjectSortOption.Title => query.OrderByDescending(p => p.Title).ThenBy(p => p.SortOrder),        
+            ProjectSortOption.DifficultyLevel => query.OrderByDescending(p => p.DifficultyLevel).ThenBy(p => p.SortOrder),
+           
             _ => query.OrderBy(p => p.SortOrder) //default sort option is `SortOrder`
         };
+       
 
         List<ProjectDto> projects = await query
              .Skip((page - 1) * pageSize)

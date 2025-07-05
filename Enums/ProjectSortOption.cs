@@ -1,10 +1,8 @@
 ﻿public enum ProjectSortOption
 {
-    StartDate,
-    EndDate,
-    SortOrder,
+    Title,
     Status,
     DifficultyLevel,
-    CreatedAt
+    
 
 }

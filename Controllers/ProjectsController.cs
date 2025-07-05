@@ -88,6 +88,7 @@ public class ProjectsController : ControllerBase
     {
         try
         {
+            Console.WriteLine($"Here is your sort option in controller {sortBy}");
             //First, extract the user's access token from the Authorization header
             var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
 

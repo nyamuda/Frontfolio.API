@@ -42,7 +42,7 @@ public class ProjectParagraphService:IParagraphService
         //Check if background paragraph with the given ID and ProjectID exists
         var background = await _context.Paragraphs
             .FirstOrDefaultAsync(p => p.Id.Equals(paragraphId) && p.ProjectId.Equals(projectId))
-            ?? throw new KeyNotFoundException($@"Project background paragraph with ID ""{paragraphId}"" and ProjectId ""{projectId}"" does not exist.");
+            ?? throw new KeyNotFoundException($@"Paragraph with ID ""{paragraphId}"" and ProjectId ""{projectId}"" does not exist.");
 
 
         //Only the owner the project is allowed to delete its paragraph

@@ -118,5 +118,18 @@ public class BlogService : IBlogService
 
     }
 
+     //Delete a blog
+    public async Task DeleteAsync(int blogId,int tokenUserId)
+    {
+        var blog = await _context.Blogs.FirstOrDefaultAsync(p => p.Id.Equals(blogId))
+            ?? throw new KeyNotFoundException($@"Blog with ID ""{blogId}"" does not exist.");
+
+        //Only the owner the blog is allowed to delete it
+        BlogHelper.EnsureUserOwnsBlog(tokenUserId, blog, crudContext: CrudContext.Delete);
+
+        _context.Blogs.Remove(blog);
+        await _context.SaveChangesAsync();
+    }
+
 }
 

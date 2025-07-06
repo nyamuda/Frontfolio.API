@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
     public DbSet<Challenge> Challenges { get; set; } = default!;
     public DbSet<Achievement> Achievements { get; set; } = default!;
     public DbSet<Feedback> Feedback { get; set; } = default!;
+    public DbSet<Blog> Blogs { get; set; }=default!;
 
 
 

@@ -78,6 +78,13 @@ using Microsoft.EntityFrameworkCore;
             .HasForeignKey(f => f.ProjectId)
             .OnDelete(DeleteBehavior.Cascade); //delete Project ->  delete Feedback for that Project
 
+        //A Blog can have many paragraphs and a Paragraph can only belong to one Blog
+        //Hence, there is a one-many relationship between Blog and Paragraph
+        modelBuilder.Entity<Blog>()
+            .HasMany(b => b.Content)
+            .WithOne(p => p.Blog)
+            .HasForeignKey(p => p.BlogId)
+            .OnDelete(DeleteBehavior.Cascade); //delete Blog ->  delete Paragraphs for that Blog
 
 
     }

@@ -82,7 +82,7 @@ namespace Frontfolio.API.Services
         }
 
         /// <summary>
-        /// Updates existing background paragraphs for a given blog by applying any changes
+        /// Updates existing paragraphs for a given blog by applying any changes
         /// from the incoming list of paragraphs that match by ID.
         /// </summary>
         /// <param name="blogId">The ID of the blog whose paragraphs should be updated.</param>
@@ -90,20 +90,19 @@ namespace Frontfolio.API.Services
         /// <exception cref="KeyNotFoundException">Thrown if the blog with the specified ID is not found.</exception>
         public async Task UpdateExistingAsync(int blogId, List<Paragraph> incomingParagraphs)
         {
-            // Retrieve the blog including its current background paragraphs
+            // Retrieve the blog including its current paragraphs
             var blog = await _context.Blogs
-                .Include(p => p.Background)
-                .FirstOrDefaultAsync(p => p.Id == blogId)
+                .Include(p => p.Content)
+                .FirstOrDefaultAsync(p => p.Id.Equals(blogId))
                 ?? throw new KeyNotFoundException($@"Blog with ID ""{blogId}"" does not exist.");
 
             // Loop through each existing paragraph and try to find a match in the incoming list
-            foreach (var existingParagraph in blog.Background)
+            foreach (var existingParagraph in blog.Content)
             {
                 var updatedParagraph = incomingParagraphs.FirstOrDefault(p => p.Id == existingParagraph.Id);
 
                 if (updatedParagraph is not null)
                 {
-                    // Update only if values have changed 
                     existingParagraph.Title = updatedParagraph.Title;
                     existingParagraph.Content = updatedParagraph.Content;
                     existingParagraph.ImageUrl = updatedParagraph.ImageUrl;

@@ -94,6 +94,7 @@ public class ProjectService : IProjectService
                  EndDate = p.EndDate,
                  Summary = p.Summary,
                  Status = p.Status,
+                 UserId=p.UserId,
                  TechStack = p.TechStack,
                  ImageUrl = p.ImageUrl,
                  VideoUrl = p.VideoUrl,

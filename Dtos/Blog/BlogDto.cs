@@ -14,7 +14,7 @@ public class BlogDto
 
     public required BlogStatus Status { get; set; }
 
-    public required List<ParagraphDto> Content { get; set; }
+    public List<ParagraphDto> Content { get; set; } = [];
 
     public required List<string> Tags { get; set; }
 
@@ -24,6 +24,7 @@ public class BlogDto
 
     public DateTime PublishedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
 
     public static BlogDto MapFrom(Blog blog)
     {

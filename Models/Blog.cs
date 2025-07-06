@@ -8,6 +8,8 @@ public class Blog
 
     public required string Title { get; set; }
 
+    public required string Topic { get; set; }
+
     public required string Summary { get; set; }
 
     public string? ImageUrl { get; set; }
@@ -17,6 +19,10 @@ public class Blog
     public required List<Paragraph> Content { get; set; }
 
     public required List<string> Tags { get; set; } 
+
+    public required int UserId { get; set; }
+
+    public User? User { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

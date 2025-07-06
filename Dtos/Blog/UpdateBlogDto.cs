@@ -12,8 +12,6 @@ public class UpdateBlogDto
     public required string Summary { get; set; }
     [Url]
     public string? ImageUrl { get; set; }
-    [Required]
-    public required BlogStatus Status { get; set; }
 
     [Required]
     [MinLength(1, ErrorMessage = "Your content must include at least one paragraph.")]
@@ -23,10 +21,8 @@ public class UpdateBlogDto
     [MinLength(1, ErrorMessage = "Please add at least one tag.")]
     public required List<string> Tags { get; set; }
 
-    [Required]
-    public required int UserId { get; set; }
 
-    public static Blog MapTo(AddBlogDto blogDto)
+    public static Blog MapTo(UpdateBlogDto blogDto)
     {
         return new Blog
         {
@@ -34,10 +30,8 @@ public class UpdateBlogDto
             Topic = blogDto.Topic,
             Summary = blogDto.Summary,
             ImageUrl = blogDto.ImageUrl,
-            Status = blogDto.Status,
             Content = blogDto.Content.Select(p => UpdateParagraphDto.MapTo(p)).ToList(),
             Tags = blogDto.Tags,
-            UserId = blogDto.UserId,
             UpdatedAt= DateTime.UtcNow
 
         };

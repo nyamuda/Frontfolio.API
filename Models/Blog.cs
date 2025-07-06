@@ -14,13 +14,13 @@ public class Blog
 
     public string? ImageUrl { get; set; }
 
-    public required BlogStatus Status { get; set; } = BlogStatus.Draft;
+    public BlogStatus Status { get; set; } = BlogStatus.Draft;
 
     public required List<Paragraph> Content { get; set; }
 
     public required List<string> Tags { get; set; } 
 
-    public required int UserId { get; set; }
+    public int UserId { get; set; }
 
     public User? User { get; set; }
 

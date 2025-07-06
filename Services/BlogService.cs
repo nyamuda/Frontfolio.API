@@ -1,6 +1,7 @@
 ﻿
 using Frontfolio.API.Data;
 using Frontfolio.API.Models;
+using Frontfolio.API.Services;
 using Frontfolio.API.Services.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -9,11 +10,12 @@ public class BlogService : IBlogService
 {
 
     private readonly ApplicationDbContext _context;
-    private readonly ParagraphService _paragraphService;
+    private readonly BlogParagraphService _paragraphService;
 
-    public BlogService(ApplicationDbContext context,Paragraph)
+    public BlogService(ApplicationDbContext context,BlogParagraphService paragraphService)
     {
         _context = context;
+        _paragraphService = paragraphService;
     }
 
     public async Task<BlogDto> GetAsync(int blogId, int tokenUserId)
@@ -84,12 +86,6 @@ public class BlogService : IBlogService
 
     public async Task UpdateAsync(int blogId, int tokenUserId, UpdateBlogDto updateBlogDto)
     {
-        //check if user with the given ID exist
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(tokenUserId))
-            ?? throw new KeyNotFoundException($@"User with ID ""{tokenUserId}"" does not exist.");
-
-        //map UpdateBlogDto to Blog
-        Blog blog = UpdateBlogDto.MapTo(updateBlogDto);
 
         //get the existing blog
         Blog existingBlog = await _context.Blogs.FirstOrDefaultAsync(p => p.Id.Equals(blogId))
@@ -98,51 +94,27 @@ public class BlogService : IBlogService
         //Only the owner the blog is allowed to update it
         BlogHelper.EnsureUserOwnsBlog(tokenUserId, existingBlog, crudContext: CrudContext.Update);
 
-        // Update all properties
-        existingBlog.Title = blog.Title;
-        existingBlog.Status = blog.Status;
-        existingBlog.SortOrder = blog.SortOrder;
-        existingBlog.DifficultyLevel = blog.DifficultyLevel;
-        existingBlog.StartDate = blog.StartDate;
-        existingBlog.EndDate = blog.EndDate;
-        existingBlog.Summary = blog.Summary;
-        existingBlog.GitHubUrl = blog.GitHubUrl;
-        existingBlog.ImageUrl = blog.ImageUrl;
-        existingBlog.VideoUrl = blog.VideoUrl;
-        existingBlog.LiveUrl = blog.LiveUrl;
-        existingBlog.TechStack = blog.TechStack;
-        existingBlog.UpdatedAt = DateTime.UtcNow;
 
+        //map UpdateBlogDto to Blog
+        Blog updatedBlog = UpdateBlogDto.MapTo(updateBlogDto);
+
+        // Update properties
+        existingBlog.Title = updatedBlog.Title;
+        existingBlog.Topic = updatedBlog.Topic;
+        existingBlog.Summary = updatedBlog.Summary;
+        existingBlog.Content = updatedBlog.Content;
+        existingBlog.ImageUrl = updatedBlog.ImageUrl;
+        existingBlog.Tags= updatedBlog.Tags;
+        existingBlog.UpdatedAt = updatedBlog.UpdatedAt;
+      
         await _context.SaveChangesAsync();
 
-        //STEP 1. Update the nested background paragraphs
-        //The updated background paragraph list contains the updated paragraphs as well as some new ones
+        //Final Step: Update the nested content paragraphs
+        //The updated content paragraph list contains the updated paragraphs as well as some new ones
         //add the new paragraphs
-        await _paragraphService.AddIfNotExistingAsync(existingBlog.Id, blog.Background);
+        await _paragraphService.AddIfNotExistingAsync(existingBlog.Id, updatedBlog.Content);
         //update existing ones
-        await _paragraphService.UpdateExistingAsync(existingBlog.Id, blog.Background);
-
-        //STEP 2. Update the nested challenges
-        //The updated challenge list contains the updated challenges as well as some new ones
-        //add the new challenges
-        await _challengeService.AddIfNotExistingAsync(existingBlog.Id, blog.Challenges);
-        //update existing ones
-        await _challengeService.UpdateExistingAsync(existingBlog.Id, blog.Challenges);
-
-        //STEP 3. Update the nested achievements
-        //The updated achievement list contains the updated achievements as well as some new ones
-        //add the new achievements
-        await _achievementService.AddIfNotExistingAsync(existingBlog.Id, blog.Achievements);
-        //update existing ones
-        await _achievementService.UpdateExistingAsync(existingBlog.Id, blog.Achievements);
-
-        //STEP 4. Update the nested feedback items
-        //The updated feedback list contains the updated feedback items as well as new ones
-        //add the new feedback items
-        await _feedbackService.AddIfNotExistingAsync(existingBlog.Id, blog.Feedback);
-        //update existing ones
-        await _feedbackService.UpdateExistingAsync(existingBlog.Id, blog.Feedback);
-
+        await _paragraphService.UpdateExistingAsync(existingBlog.Id, updatedBlog.Content);
 
     }
 

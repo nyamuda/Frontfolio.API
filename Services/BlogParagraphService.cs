@@ -55,11 +55,11 @@ namespace Frontfolio.API.Services
 
          
         /// <summary>
-        /// Adds new background paragraphs to a blog by excluding any paragraphs
-        /// that already exist in the blog's curr ent background list.
+        /// Adds new paragraphs to a blog by excluding any paragraphs
+        /// that already exist in the blog's current paragraph list.
         /// </summary>
         /// <param name="blogId">The ID of the blog to update.</param>
-        /// <param name="incomingParagraphs">The full list of incoming background paragraphs (both new and possibly existing ones).</param>
+        /// <param name="incomingParagraphs">The full list of incoming paragraphs (both new and possibly existing ones).</param>
         /// <exception cref="KeyNotFoundException">Thrown if a blog with the given ID is not found.</exception>
         public async Task AddIfNotExistingAsync(int blogId, List<Paragraph> incomingParagraphs)
         {
@@ -68,7 +68,7 @@ namespace Frontfolio.API.Services
                 ?? throw new KeyNotFoundException($@"Blog with ID ""{blogId}"" does not exist.");
 
             // Get a list of IDs for paragraphs that are already part of the blog
-            List<int> existingParagraphIds = blog.Background.Select(p => p.Id).ToList();
+            List<int> existingParagraphIds = blog.Content.Select(p => p.Id).ToList();
 
             // Filter incoming paragraphs to exclude any that already exist
             var uniqueParagraphs = incomingParagraphs
@@ -76,7 +76,7 @@ namespace Frontfolio.API.Services
                 .ToList();
 
             // Add the unique paragraphs to the blog
-            blog.Background.AddRange(uniqueParagraphs);
+            blog.Content.AddRange(uniqueParagraphs);
 
             await _context.SaveChangesAsync();
         }

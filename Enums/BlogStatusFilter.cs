@@ -1,5 +1,6 @@
 ﻿public enum BlogStatusFilter
 {
     Published,
-    Draft
+    Draft,
+    All
 }

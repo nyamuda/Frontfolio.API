@@ -83,7 +83,26 @@ public class BlogService : IBlogService
 
     }
 
+    //Add a new blog
+    public async Task<BlogDto> CreateAsync(int userId, AddBlogDto addBlogDto)
+    {
+        //check if user with the given ID exist
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(userId))
+        ?? throw new KeyNotFoundException($@"User with ID ""{userId}"" does not exist.");
 
+        //Map AddBlogDto to Blog so that we can save the blog to the database
+        Blog newBlog = AddBlogDto.MapTo(addBlogDto);
+        //add the user ID
+        newBlog.UserId = userId;
+
+        //save the new blog
+        _context.Blogs.Add(newBlog);
+        await _context.SaveChangesAsync();
+
+        return BlogDto.MapFrom(newBlog);
+    }
+
+    //Update existing blog
     public async Task UpdateAsync(int blogId, int tokenUserId, UpdateBlogDto updateBlogDto)
     {
 

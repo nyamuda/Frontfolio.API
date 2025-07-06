@@ -100,7 +100,7 @@ public class ProjectParagraphService:IParagraphService
 
             if (updatedParagraph is not null)
             {
-                // Update only if values have changed 
+                
                 existingParagraph.Title = updatedParagraph.Title;
                 existingParagraph.Content = updatedParagraph.Content;
                 existingParagraph.ImageUrl = updatedParagraph.ImageUrl;

@@ -137,13 +137,6 @@ public class ProjectService : IProjectService
     //Update an existing project
     public async Task UpdateAsync(int projectId, int tokenUserId, UpdateProjectDto updateProjectDto)
     {
-        //check if user with the given ID exist
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.Equals(tokenUserId))
-            ?? throw new KeyNotFoundException($@"User with ID ""{tokenUserId}"" does not exist.");
-
-        //map UpdateProjectDto to Project
-        Project project = UpdateProjectDto.MapTo(updateProjectDto);
-
         //get the existing project
         Project existingProject = await _context.Projects.FirstOrDefaultAsync(p => p.Id.Equals(projectId))
             ?? throw new KeyNotFoundException(($@"Project with ID ""{projectId}"" does not exist."));
@@ -151,20 +144,26 @@ public class ProjectService : IProjectService
         //Only the owner the project is allowed to update it
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, existingProject, crudContext: CrudContext.Update);
 
+
+        //map UpdateProjectDto to Project
+        Project updatedProject = UpdateProjectDto.MapTo(updateProjectDto);
+
+       
+
         // Update all properties
-        existingProject.Title = project.Title;
-        existingProject.Status = project.Status;
-        existingProject.SortOrder = project.SortOrder;
-        existingProject.DifficultyLevel = project.DifficultyLevel;
-        existingProject.StartDate = project.StartDate;
-        existingProject.EndDate = project.EndDate;
-        existingProject.Summary = project.Summary;
-        existingProject.GitHubUrl = project.GitHubUrl;
-        existingProject.ImageUrl = project.ImageUrl;
-        existingProject.VideoUrl = project.VideoUrl;
-        existingProject.LiveUrl = project.LiveUrl;
-        existingProject.TechStack = project.TechStack;
-        existingProject.UpdatedAt = DateTime.UtcNow;
+        existingProject.Title = updatedProject.Title;
+        existingProject.Status = updatedProject.Status;
+        existingProject.SortOrder = updatedProject.SortOrder;
+        existingProject.DifficultyLevel = updatedProject.DifficultyLevel;
+        existingProject.StartDate = updatedProject.StartDate;
+        existingProject.EndDate = updatedProject.EndDate;
+        existingProject.Summary = updatedProject.Summary;
+        existingProject.GitHubUrl = updatedProject.GitHubUrl;
+        existingProject.ImageUrl = updatedProject.ImageUrl;
+        existingProject.VideoUrl = updatedProject.VideoUrl;
+        existingProject.LiveUrl = updatedProject.LiveUrl;
+        existingProject.TechStack = updatedProject.TechStack;
+        existingProject.UpdatedAt = updatedProject.UpdatedAt;
 
         await _context.SaveChangesAsync();
 

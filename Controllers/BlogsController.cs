@@ -1,4 +1,5 @@
-﻿using Frontfolio.API.Services.Abstractions;
+﻿using Frontfolio.API.Services;
+using Frontfolio.API.Services.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace Frontfolio.API.Controllers
     {
         private readonly BlogService _blogService;
         private readonly JwtService _jwtService;
+        private readonly BlogParagraphService _blogParagraphService;
 
-        public BlogsController(BlogService blogService,JwtService jwtService) { 
+        public BlogsController(BlogService blogService,JwtService jwtService,BlogParagraphService blogParagraphService) { 
             _blogService = blogService;
             _jwtService = jwtService;
+            _blogParagraphService = blogParagraphService;
         
         }
 
@@ -263,8 +266,8 @@ namespace Frontfolio.API.Controllers
             }
         }
 
-        //Delete background paragraph for a specific blog
-        [HttpDelete("{blogId}/backgrounds/{paragraphId}")]
+        //Delete content paragraph for a specific blog
+        [HttpDelete("{blogId}/content/{paragraphId}")]
         public async Task<IActionResult> DeleteBlogBackgroundParagraph(int blogId, int paragraphId)
         {
             try
@@ -279,7 +282,7 @@ namespace Frontfolio.API.Controllers
 
                 if (int.TryParse(tokenUserId, out int userId))
                 {
-                    await _paragraphService.DeleteByIdAsync(blogId: blogId, paragraphId: paragraphId, tokenUserId: userId);
+                    await _blogParagraphService.DeleteByIdAsync(blogId: blogId, paragraphId: paragraphId, tokenUserId: userId);
                     return NoContent();
                 }
                 //throw an exception if tokenUserId cannot be parsed

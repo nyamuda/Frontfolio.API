@@ -12,7 +12,7 @@ public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;
     private readonly JwtService _jwtService;
-    private readonly ProjectParagraphService _paragraphService;
+    private readonly ProjectParagraphService _projectParagraphService;
     private readonly ChallengeService _challengeService;
     private readonly AchievementService _achievementService;
     private readonly FeedbackService _feedbackService;
@@ -27,7 +27,7 @@ public class ProjectsController : ControllerBase
     {
         _projectService = projectService;
         _jwtService = jwtService;
-        _paragraphService = paragraphService;
+        _projectParagraphService = paragraphService;
         _achievementService = achievementService;
         _challengeService = challengeService;
         _feedbackService = feedbackService;
@@ -295,7 +295,7 @@ public class ProjectsController : ControllerBase
 
             if (int.TryParse(tokenUserId, out int userId))
             {
-                await _paragraphService.DeleteByIdAsync(projectId: projectId, paragraphId: paragraphId, tokenUserId: userId);
+                await _projectParagraphService.DeleteByIdAsync(projectId: projectId, paragraphId: paragraphId, tokenUserId: userId);
                 return NoContent();
             }
             //throw an exception if tokenUserId cannot be parsed

@@ -170,30 +170,30 @@ public class ProjectService : IProjectService
         //STEP 1. Update the nested background paragraphs
         //The updated background paragraph list contains the updated paragraphs as well as some new ones
         //add the new paragraphs
-        await _paragraphService.AddIfNotExistingAsync(existingProject.Id, project.Background);
+        await _paragraphService.AddIfNotExistingAsync(existingProject.Id,updatedProject.Background);
         //update existing ones
-        await _paragraphService.UpdateExistingAsync(existingProject.Id, project.Background);
+        await _paragraphService.UpdateExistingAsync(existingProject.Id, updatedProject.Background);
 
         //STEP 2. Update the nested challenges
         //The updated challenge list contains the updated challenges as well as some new ones
         //add the new challenges
-        await _challengeService.AddIfNotExistingAsync(existingProject.Id, project.Challenges);
+        await _challengeService.AddIfNotExistingAsync(existingProject.Id, updatedProject.Challenges);
         //update existing ones
-        await _challengeService.UpdateExistingAsync(existingProject.Id, project.Challenges);
+        await _challengeService.UpdateExistingAsync(existingProject.Id, updatedProject.Challenges);
 
         //STEP 3. Update the nested achievements
         //The updated achievement list contains the updated achievements as well as some new ones
         //add the new achievements
-        await _achievementService.AddIfNotExistingAsync(existingProject.Id, project.Achievements);
+        await _achievementService.AddIfNotExistingAsync(existingProject.Id, updatedProject.Achievements);
         //update existing ones
-        await _achievementService.UpdateExistingAsync(existingProject.Id, project.Achievements);
+        await _achievementService.UpdateExistingAsync(existingProject.Id, updatedProject.Achievements);
 
         //STEP 4. Update the nested feedback items
         //The updated feedback list contains the updated feedback items as well as new ones
         //add the new feedback items
-        await _feedbackService.AddIfNotExistingAsync(existingProject.Id, project.Feedback);
+        await _feedbackService.AddIfNotExistingAsync(existingProject.Id, updatedProject.Feedback);
         //update existing ones
-        await _feedbackService.UpdateExistingAsync(existingProject.Id, project.Feedback);
+        await _feedbackService.UpdateExistingAsync(existingProject.Id, updatedProject.Feedback);
 
 
 
@@ -211,6 +211,22 @@ public class ProjectService : IProjectService
 
         _context.Projects.Remove(project);
         await _context.SaveChangesAsync();
+    }
+
+    //Publish a project
+    public async Task PublishAsync(int projectId,int tokenUserId)
+    {
+        //get the project to be published
+        var project = await _context.Projects.FirstOrDefaultAsync(p =>p.Id.Equals(projectId))
+            ?? throw new KeyNotFoundException($@"Project with ID ""{projectId}"" does not exist.");
+
+        //Only the owner the project is allowed to publish it
+        ProjectHelper.EnsureUserOwnsProject(tokenUserId, project, crudContext: CrudContext.Update);
+
+        //check if project is not already published
+        if(project.Status.Equals(ProjectStatus.Published))
+            throw new InvalidOperationException("Project is already published")
+
     }
 
 

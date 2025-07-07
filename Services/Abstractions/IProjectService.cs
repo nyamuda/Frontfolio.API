@@ -12,8 +12,7 @@
 
         Task DeleteAsync(int projectId, int tokenUserId);
 
-
-
+        Task PublishAsync(int projectId, int tokenUserId);
 
 
     }

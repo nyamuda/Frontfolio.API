@@ -1,4 +1,5 @@
 using Frontfolio.API.Data;
+using Frontfolio.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,8 @@ builder.Services.AddScoped<ProjectParagraphService>();
 builder.Services.AddScoped<ChallengeService>();
 builder.Services.AddScoped<AchievementService>();
 builder.Services.AddScoped<FeedbackService>();
+builder.Services.AddScoped<BlogService>();
+builder.Services.AddScoped<BlogParagraphService>();
 
 
 

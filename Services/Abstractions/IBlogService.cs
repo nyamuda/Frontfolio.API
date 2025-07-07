@@ -11,5 +11,7 @@
 
     Task DeleteAsync(int blogId, int tokenUserId);
 
+    Task PublishAsync(int blogId, int tokenUserId);
+
 }
 

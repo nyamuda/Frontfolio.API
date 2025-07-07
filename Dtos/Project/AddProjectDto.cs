@@ -39,10 +39,6 @@ public class AddProjectDto
     [Url]
     public string? LiveUrl { get; set; }
 
-    [Required]
-    public ProjectStatus Status { get; set; }
-
-
     public List<AddParagraphDto> Background { get; set; } = [];
 
     public List<AddChallengeDto> Challenges { get; set; } = [];
@@ -69,7 +65,6 @@ public class AddProjectDto
             ImageUrl = projectDto.ImageUrl,
             VideoUrl=projectDto.VideoUrl,
             LiveUrl = projectDto.LiveUrl,
-            Status = projectDto.Status,
             Background = projectDto.Background.Select(p => new Paragraph {
             Title=p.Title,
             Content=p.Content,

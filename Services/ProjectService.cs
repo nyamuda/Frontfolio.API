@@ -210,6 +210,7 @@ public class ProjectService : IProjectService
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, project, crudContext: CrudContext.Delete);
 
         _context.Projects.Remove(project);
+      
         await _context.SaveChangesAsync();
     }
 

@@ -12,7 +12,7 @@ public class BlogService : IBlogService
     private readonly ApplicationDbContext _context;
     private readonly BlogParagraphService _paragraphService;
 
-    public BlogService(ApplicationDbContext context,BlogParagraphService paragraphService)
+    public BlogService(ApplicationDbContext context, BlogParagraphService paragraphService)
     {
         _context = context;
         _paragraphService = paragraphService;
@@ -50,7 +50,7 @@ public class BlogService : IBlogService
         //sort the blogs by the provided sortOption
         query = sortOption switch
         {
-            BlogSortOption.Title => query.OrderByDescending(b => b.Title),      
+            BlogSortOption.Title => query.OrderByDescending(b => b.Title),
             _ => query.OrderByDescending(p => p.PublishedAt) //default sort option is `SubmittedAt`
         };
 
@@ -58,11 +58,11 @@ public class BlogService : IBlogService
         List<BlogDto> blogs = await query
              .Skip((page - 1) * pageSize)
              .Take(pageSize)
-             .Select(b=> new BlogDto
+             .Select(b => new BlogDto
              {
                  Id = b.Id,
                  Title = b.Title,
-                 Topic = b.Topic,                
+                 Topic = b.Topic,
                  Summary = b.Summary,
                  Status = b.Status,
                  Tags = b.Tags,
@@ -70,7 +70,7 @@ public class BlogService : IBlogService
                  UserId = b.UserId,
                  CreatedAt = b.CreatedAt,
                  UpdatedAt = b.UpdatedAt,
-                 PublishedAt=b.PublishedAt,
+                 PublishedAt = b.PublishedAt,
              }).ToListAsync();
 
         //check if there are still more blogs for the user
@@ -123,9 +123,9 @@ public class BlogService : IBlogService
         existingBlog.Summary = updatedBlog.Summary;
         existingBlog.Content = updatedBlog.Content;
         existingBlog.ImageUrl = updatedBlog.ImageUrl;
-        existingBlog.Tags= updatedBlog.Tags;
+        existingBlog.Tags = updatedBlog.Tags;
         existingBlog.UpdatedAt = updatedBlog.UpdatedAt;
-      
+
         await _context.SaveChangesAsync();
 
         //Final Step: Update the nested content paragraphs
@@ -137,17 +137,21 @@ public class BlogService : IBlogService
 
     }
 
-     //Delete a blog
-    public async Task DeleteAsync(int blogId,int tokenUserId)
+    //Delete a blog
+    public async Task DeleteAsync(int blogId, int tokenUserId)
     {
         var blog = await _context.Blogs.FirstOrDefaultAsync(p => p.Id.Equals(blogId))
             ?? throw new KeyNotFoundException($@"Blog with ID ""{blogId}"" does not exist.");
 
         //Only the owner the blog is allowed to delete it
         BlogHelper.EnsureUserOwnsBlog(tokenUserId, blog, crudContext: CrudContext.Delete);
-
+        //delete the blog
         _context.Blogs.Remove(blog);
         await _context.SaveChangesAsync();
+
+        // Manually delete content paragraphs because cascade delete is disabled
+        // (the Blog → Paragraph relationship uses DeleteBehavior.NoAction)
+        await _context.Paragraphs.Where(p => p.BlogId.Equals(blog.Id)).ExecuteDeleteAsync();
     }
 
     //Publish a blog
@@ -166,7 +170,7 @@ public class BlogService : IBlogService
 
         //publish blog
         blog.Status = BlogStatus.Published;
-        blog.PublishedAt= DateTime.UtcNow;
+        blog.PublishedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
 

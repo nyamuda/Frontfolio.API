@@ -18,7 +18,7 @@ public class AddProjectDto
     public int SortOrder { get; set; }
 
     [Required]
-    public ProjectDifficultyLevel DifficultyLevel { get; set; } 
+    public ProjectDifficultyLevel DifficultyLevel { get; set; }
 
     [Required]
     public string Summary { get; set; }
@@ -28,7 +28,7 @@ public class AddProjectDto
     public DateTime EndDate { get; set; }
 
     [Required]
-    [MinLength(1,ErrorMessage = "You need to include at least one tool, language, or framework used in this project.")]
+    [MinLength(1, ErrorMessage = "You need to include at least one tool, language, or framework used in this project.")]
     public List<string> TechStack { get; set; } = [];
     [Url]
     public string? GitHubUrl { get; set; }
@@ -55,26 +55,27 @@ public class AddProjectDto
         return new Project
         {
             Title = projectDto.Title,
-            SortOrder=projectDto.SortOrder,
-            DifficultyLevel=projectDto.DifficultyLevel,
-            StartDate=TimeZoneInfo.ConvertTimeToUtc(projectDto.StartDate),
-            EndDate=TimeZoneInfo.ConvertTimeToUtc(projectDto.EndDate),
+            SortOrder = projectDto.SortOrder,
+            DifficultyLevel = projectDto.DifficultyLevel,
+            StartDate = TimeZoneInfo.ConvertTimeToUtc(projectDto.StartDate),
+            EndDate = TimeZoneInfo.ConvertTimeToUtc(projectDto.EndDate),
             Summary = projectDto.Summary,
             TechStack = projectDto.TechStack,
             GitHubUrl = projectDto.GitHubUrl,
             ImageUrl = projectDto.ImageUrl,
-            VideoUrl=projectDto.VideoUrl,
+            VideoUrl = projectDto.VideoUrl,
             LiveUrl = projectDto.LiveUrl,
-            Background = projectDto.Background.Select(p => new Paragraph {
-            Title=p.Title,
-            Content=p.Content,
-            ParagraphType=ParagraphType.ProjectBackground,
-            ImageUrl=p.ImageUrl,
-            ImageCaption=p.ImageCaption,    
+            Background = projectDto.Background.Select(p => new Paragraph
+            {
+                Title = p.Title,
+                Content = p.Content,
+                ParagraphType = ParagraphType.ProjectBackground,
+                ImageUrl = p.ImageUrl,
+                ImageCaption = p.ImageCaption,
             }).ToList(),
             Challenges = projectDto.Challenges.Select(c => AddChallengeDto.MapTo(c)).ToList(),
             Achievements = projectDto.Achievements.Select(a => AddAchievementDto.MapTo(a)).ToList(),
-            Feedback = projectDto.Feedback.Select(f =>AddFeedbackDto.MapTo(f)).ToList(),
+            Feedback = projectDto.Feedback.Select(f => AddFeedbackDto.MapTo(f)).ToList(),
 
         };
 

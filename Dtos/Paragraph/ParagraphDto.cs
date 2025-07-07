@@ -9,6 +9,7 @@ public class ParagraphDto
     public string? ImageCaption { get; set; } = default!;
     public required ParagraphType ParagraphType { get; set; }
     public int? ProjectId { get; set; }
+    public int? BlogId { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set;}  
@@ -25,7 +26,8 @@ public class ParagraphDto
             ImageCaption = paragraph.ImageCaption,
             ParagraphType = paragraph.ParagraphType,
             ProjectId = paragraph.ProjectId,
-            CreatedAt=paragraph.CreatedAt,
+            BlogId = paragraph.BlogId,
+            CreatedAt =paragraph.CreatedAt,
             UpdatedAt=paragraph.UpdatedAt,
         };
 

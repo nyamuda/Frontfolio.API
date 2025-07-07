@@ -407,7 +407,7 @@ namespace Frontfolio.API.Migrations
                     b.HasOne("Blog", "Blog")
                         .WithMany("Content")
                         .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Frontfolio.API.Models.Project", "Project")
                         .WithMany("Background")

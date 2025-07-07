@@ -217,6 +217,61 @@ namespace Frontfolio.API.Controllers
             }
         }
 
+
+        //Publish a blog
+        [HttpPatch("{id}/publish")]
+        public async Task<IActionResult> Publish(int id)
+        {
+            try
+            {
+                //First, extract the user's access token from the Authorization header
+                var token = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+
+                //Manually validate the token and then grab the User ID from the token claims
+                ClaimsPrincipal claims = _jwtService.ValidateJwtToken(token);
+                string tokenUserId = claims.FindFirstValue(ClaimTypes.NameIdentifier) ??
+                    throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+
+                if (int.TryParse(tokenUserId, out int userId))
+                {
+                    //publish blog
+                    await _blogService.PublishAsync(blogId: id, tokenUserId: userId);
+
+                    return NoContent();
+                }
+
+                //throw an exception if tokenUserId cannot be parsed
+                throw new UnauthorizedAccessException(ErrorMessageHelper.InvalidNameIdentifierMessage());
+
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+
+            }
+            catch (Exception ex)
+            {
+                var response = new
+                {
+                    message = ErrorMessageHelper.UnexpectedErrorMessage(),
+                    details = ex.Message
+                };
+
+                return StatusCode(500, response);
+            }
+
+        }
+
         //Delete a blog
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

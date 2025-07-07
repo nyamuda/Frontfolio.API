@@ -85,7 +85,7 @@ using Microsoft.EntityFrameworkCore;
             .HasMany(b => b.Content)
             .WithOne(p => p.Blog)
             .HasForeignKey(p => p.BlogId)
-            .OnDelete(DeleteBehavior.Cascade); //delete Blog ->  delete Paragraphs for that Blog
+            .OnDelete(DeleteBehavior.NoAction); //delete Blog ->  no action Paragraphs for that Blog
 
         //A User can have many blogs and a Blog can only belong to one User
         //Hence, there is a one-many relationship between User and Blog

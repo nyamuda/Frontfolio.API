@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Frontfolio.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250707030314_BlogMigration")]
+    [Migration("20250707071929_BlogMigration")]
     partial class BlogMigration
     {
         /// <inheritdoc />
@@ -410,7 +410,7 @@ namespace Frontfolio.API.Migrations
                     b.HasOne("Blog", "Blog")
                         .WithMany("Content")
                         .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Frontfolio.API.Models.Project", "Project")
                         .WithMany("Background")

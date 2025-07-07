@@ -60,8 +60,7 @@ namespace Frontfolio.API.Migrations
                 table: "Paragraphs",
                 column: "BlogId",
                 principalTable: "Blogs",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />

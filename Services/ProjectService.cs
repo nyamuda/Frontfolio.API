@@ -224,8 +224,13 @@ public class ProjectService : IProjectService
         ProjectHelper.EnsureUserOwnsProject(tokenUserId, project, crudContext: CrudContext.Update);
 
         //check if project is not already published
-        if(project.Status.Equals(ProjectStatus.Published))
-            throw new InvalidOperationException("Project is already published")
+        if (project.Status.Equals(ProjectStatus.Published))
+            throw new InvalidOperationException("Cannot publish: the project is already marked as published.");
+
+        //publish project
+        project.Status = ProjectStatus.Published;
+
+        await _context.SaveChangesAsync();
 
     }
 

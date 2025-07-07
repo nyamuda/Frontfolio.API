@@ -150,5 +150,27 @@ public class BlogService : IBlogService
         await _context.SaveChangesAsync();
     }
 
+    //Publish a blog
+    public async Task PublishAsync(int blogId, int tokenUserId)
+    {
+        //get the blog to be published
+        var blog = await _context.Blogs.FirstOrDefaultAsync(p => p.Id.Equals(blogId))
+            ?? throw new KeyNotFoundException($@"Blog with ID ""{blogId}"" does not exist.");
+
+        //Only the owner the blog is allowed to publish it
+        BlogHelper.EnsureUserOwnsBlog(tokenUserId, blog, crudContext: CrudContext.Update);
+
+        //check if blog is not already published
+        if (blog.Status.Equals(BlogStatus.Published))
+            throw new InvalidOperationException("Cannot publish: the blog is already marked as published.");
+
+        //publish blog
+        blog.Status = BlogStatus.Published;
+        blog.PublishedAt= DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+    }
+
 }
 

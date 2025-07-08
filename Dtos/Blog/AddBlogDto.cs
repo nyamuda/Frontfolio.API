@@ -13,8 +13,6 @@
         [Url]
         public string? ImageUrl { get; set; }
         
-        [Required]
-        [MinLength(1,ErrorMessage = "Your content must include at least one paragraph.")]
         public required List<AddParagraphDto> Content { get; set; }
 
         [Required]

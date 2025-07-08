@@ -149,9 +149,11 @@ public class BlogService : IBlogService
         _context.Blogs.Remove(blog);
         await _context.SaveChangesAsync();
 
-        // Manually delete content paragraphs because cascade delete is disabled
+        // Manually delete blog paragraphs because cascade delete is disabled
         // (the Blog → Paragraph relationship uses DeleteBehavior.NoAction)
-        await _context.Paragraphs.Where(p => p.BlogId.Equals(blog.Id)).ExecuteDeleteAsync();
+        await _context.Paragraphs
+            .Where(p => p.BlogId.Equals(blog.Id))
+            .ExecuteDeleteAsync();
     }
 
     //Publish a blog

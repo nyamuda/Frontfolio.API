@@ -13,8 +13,6 @@ public class UpdateBlogDto
     [Url]
     public string? ImageUrl { get; set; }
 
-    [Required]
-    [MinLength(1, ErrorMessage = "Your content must include at least one paragraph.")]
     public required List<UpdateParagraphDto> Content { get; set; }
 
     [Required]
